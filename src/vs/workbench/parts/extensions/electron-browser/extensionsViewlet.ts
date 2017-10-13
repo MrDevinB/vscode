@@ -61,6 +61,8 @@ const ExtensionsViewletVisibleContext = new RawContextKey<boolean>('extensionsVi
 const SearchExtensionsContext = new RawContextKey<boolean>('searchExtensions', false);
 const SearchInstalledExtensionsContext = new RawContextKey<boolean>('searchInstalledExtensions', false);
 const SearchRecommendedExtensionsContext = new RawContextKey<boolean>('searchRecommendedExtensions', false);
+const SearchWorkspaceRecommendedExtensionsByTeamContext = new RawContextKey<boolean>('searchWorkspaceRecommendedByTeamExtensions', false);
+const SearchWorkspaceRecommendedExtensionsByDataContext = new RawContextKey<boolean>('searchWorkspaceRecommendedByDataExtensions', false);
 
 export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtensionsViewlet {
 
@@ -69,6 +71,8 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 	private searchExtensionsContextKey: IContextKey<boolean>;
 	private searchInstalledExtensionsContextKey: IContextKey<boolean>;
 	private searchRecommendedExtensionsContextKey: IContextKey<boolean>;
+	private searchWorkspaceRecommendedExtensionsByTeamContextKey: IContextKey<boolean>;
+	private searchWorkspaceRecommendedExtensionsByDataContextKey: IContextKey<boolean>;
 
 	private searchDelayer: ThrottledDelayer<any>;
 	private root: HTMLElement;
@@ -107,6 +111,8 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 		this.searchExtensionsContextKey = SearchExtensionsContext.bindTo(contextKeyService);
 		this.searchInstalledExtensionsContextKey = SearchInstalledExtensionsContext.bindTo(contextKeyService);
 		this.searchRecommendedExtensionsContextKey = SearchRecommendedExtensionsContext.bindTo(contextKeyService);
+		this.searchWorkspaceRecommendedExtensionsByTeamContextKey = SearchWorkspaceRecommendedExtensionsByTeamContext.bindTo(contextKeyService);
+		this.searchWorkspaceRecommendedExtensionsByDataContextKey = SearchWorkspaceRecommendedExtensionsByDataContext.bindTo(contextKeyService);
 
 		this.disposables.push(viewletService.onDidViewletOpen(this.onViewletOpen, this, this.disposables));
 		this.isAutoUpdateEnabled = this.extensionsWorkbenchService.isAutoUpdateEnabled;
@@ -127,6 +133,9 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 		viewDescriptors.push(this.createInstalledExtensionsListViewDescriptor());
 		viewDescriptors.push(this.createSearchInstalledExtensionsListViewDescriptor());
 		viewDescriptors.push(this.createRecommendedExtensionsListViewDescriptor());
+		viewDescriptors.push(this.createWorkspaceRecommendedExtensionsByTeamListViewDescriptor());
+		viewDescriptors.push(this.createWorkspaceRecommendedExtensionsByDataListViewDescriptor());
+
 		ViewsRegistry.registerViews(viewDescriptors);
 	}
 
@@ -136,7 +145,7 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 			name: localize('marketPlace', "Marketplace"),
 			location: ViewLocation.Extensions,
 			ctor: ExtensionsListView,
-			when: ContextKeyExpr.and(ContextKeyExpr.has('searchExtensions'), ContextKeyExpr.not('searchInstalledExtensions')),
+			when: ContextKeyExpr.and(ContextKeyExpr.has('searchExtensions'), ContextKeyExpr.not('searchInstalledExtensions'), ContextKeyExpr.not('searchWorkspaceRecommendedByTeamExtensions'), ContextKeyExpr.not('searchWorkspaceRecommendedByDataExtensions')),
 			size: 100
 		};
 	}
@@ -170,6 +179,30 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 			location: ViewLocation.Extensions,
 			ctor: RecommendedExtensionsView,
 			when: ContextKeyExpr.and(ContextKeyExpr.not('searchExtensions')),
+			size: 50,
+			canToggleVisibility: true
+		};
+	}
+
+	private createWorkspaceRecommendedExtensionsByTeamListViewDescriptor(): IViewDescriptor {
+		return {
+			id: 'extensions.recommendedWorkspaceByTeamList',
+			name: localize('recommendedWorkspaceByTeamExtensions', "Others on this workspace recommend"),
+			location: ViewLocation.Extensions,
+			ctor: RecommendedExtensionsView,
+			when: ContextKeyExpr.and(ContextKeyExpr.has('searchWorkspaceRecommendedByTeamExtensions')),
+			size: 50,
+			canToggleVisibility: true
+		};
+	}
+
+	private createWorkspaceRecommendedExtensionsByDataListViewDescriptor(): IViewDescriptor {
+		return {
+			id: 'extensions.recommendedWorkspaceByDataList',
+			name: localize('recommendedWorkspaceByDataExtensions', "Others on this workspace also use"),
+			location: ViewLocation.Extensions,
+			ctor: RecommendedExtensionsView,
+			when: ContextKeyExpr.and(ContextKeyExpr.has('searchWorkspaceRecommendedByDataExtensions')),
 			size: 50,
 			canToggleVisibility: true
 		};
@@ -306,7 +339,8 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 		this.searchExtensionsContextKey.set(!!value);
 		this.searchInstalledExtensionsContextKey.set(InstalledExtensionsView.isInsalledExtensionsQuery(value));
 		this.searchRecommendedExtensionsContextKey.set(RecommendedExtensionsView.isRecommendedExtensionsQuery(value));
-
+		this.searchWorkspaceRecommendedExtensionsByTeamContextKey.set(ExtensionsListView.isWorkspaceRecommendedExtensionsQuery(value));
+		this.searchWorkspaceRecommendedExtensionsByDataContextKey.set(ExtensionsListView.isWorkspaceRecommendedExtensionsQuery(value));
 		await this.updateViews([], !!value);
 	}
 
