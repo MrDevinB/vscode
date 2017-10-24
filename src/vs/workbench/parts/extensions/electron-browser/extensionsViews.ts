@@ -23,7 +23,7 @@ import { ICommandService } from 'vs/platform/commands/common/commands';
 import { append, $, toggleClass } from 'vs/base/browser/dom';
 import { PagedList } from 'vs/base/browser/ui/list/listPaging';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { Delegate, Renderer } from 'vs/workbench/parts/extensions/browser/extensionsList';
+import { Delegate, PagedRenderer } from 'vs/workbench/parts/extensions/browser/extensionsList';
 import { IExtension, IExtensionsWorkbenchService } from '../common/extensions';
 import { Query } from '../common/extensionQuery';
 import { IListService } from 'vs/platform/list/browser/listService';
@@ -87,7 +87,7 @@ export class ExtensionsListView extends ViewsViewletPanel {
 		this.extensionsList = append(container, $('.extensions-list'));
 		this.messageBox = append(container, $('.message'));
 		const delegate = new Delegate();
-		const renderer = this.instantiationService.createInstance(Renderer, this.showRecommendedLabel());
+		const renderer = this.instantiationService.createInstance(PagedRenderer, this.showRecommendedLabel());
 		this.list = new PagedList(this.extensionsList, delegate, [renderer], {
 			ariaLabel: localize('extensions', "Extensions"),
 			keyboardSupport: false

@@ -414,6 +414,974 @@ export class ExtensionsWorkbenchService implements IExtensionsWorkbenchService {
 			});
 	}
 
+	loadCompanions(extension: IExtension): TPromise<IExtension[]> {
+		let allCompanions = {
+			'alexiv.vscode-angular2-files': [
+				'infinity1207.angular2-switcher',
+				'natewallace.angular2-inline'
+			],
+			'trixnz.vscode-lua': [
+				'gccfeli.vscode-lua',
+				'xxxg0001.lua-for-vscode',
+				'dcr30.lualinter'
+			],
+			'hvyindustries.crane': [
+				'neilbrayfield.php-docblocker',
+				'linyang95.php-symbols',
+				'kasik96.format-indent'
+			],
+			'alanwalk.markdown-toc': [
+				'yzane.markdown-pdf',
+				'mdickin.markdown-shortcuts'
+			],
+			'miguel-savignano.ruby-symbols': [
+				'otoniel-isidoro.vscode-ruby-ctags',
+				'hoovercj.ruby-linter'
+			],
+			'timothymclane.react-redux-es6-snippets': [
+				'taichi.react-beautify'
+			],
+			'steoates.autoimport': [
+				'angular.ng-template',
+				'eg2.tslint',
+				'vsmobile.cordova-tools'
+			],
+			'lukehoban.go': [
+				'peterjausovec.vscode-docker'
+			],
+			'vortizhe.simple-ruby-erb': [
+				'otoniel-isidoro.vscode-ruby-ctags'
+			],
+			'jbenden.c-cpp-flylint': [
+				'ajshort.include-autocomplete'
+			],
+			'salesforce.salesforcedx-vscode-lightning': [
+				'salesforce.salesforcedx-vscode-apex',
+				'salesforce.salesforcedx-vscode-core'
+			],
+			'angulardoc.angulardoc-vscode': [
+				'ng-42.ng-fortytwo-vscode-extension'
+			],
+			'sfodje.perltidy': [
+				'kaktus.perltidy-more',
+				'henriiik.vscode-perl'
+			],
+			'formulahendry.auto-rename-tag': [
+				'formulahendry.auto-close-tag',
+				'christian-kohler.path-intellisense',
+				'ecmel.vscode-html-css'
+			],
+			'bschulte.php-autocomplete': [
+				'linyang95.php-symbols'
+			],
+			'chuckjonas.apex-autocomplete': [
+				'davidhelmer.mavensmate',
+				'johnaaronnelson.visualforce',
+				'johnaaronnelson.apex'
+			],
+			'ramonitor.meteorhelper': [
+				'vuhrmeister.vscode-meteor'
+			],
+			'salesforce.salesforcedx-vscode-core': [
+				'salesforce.salesforcedx-vscode-lightning',
+				'salesforce.salesforcedx-vscode-apex'
+			],
+			'faustinoaq.javac-linter': [
+				'dsnake.java-debug',
+				'georgewfraser.vscode-javac'
+			],
+			'jeppeandersen.vstsbuildstatus': [
+				'jeppeandersen.vstsservicestatus'
+			],
+			'mikey.vscode-fileheader': [
+				'mkxml.vscode-filesize'
+			],
+			'neilbrayfield.php-docblocker': [
+				'bmewburn.vscode-intelephense-client',
+				'hvyindustries.crane',
+				'linyang95.php-symbols'
+			],
+			'lukazakrajsek.react-utils': [
+				'bookworms.code-react-instyle',
+				'joshjg.generate-react-component'
+			],
+			'eg2.tslint': [
+				'dbaeumer.vscode-eslint',
+				'editorconfig.editorconfig',
+				'eg2.vscode-npm-script'
+			],
+			'bitzl.vscode-puppet': [
+				'jpogran.puppet-vscode',
+				'borke.puppet'
+			],
+			'wayou.vscode-todo-highlight': [
+				'shan.code-settings-sync',
+				'naumovs.color-highlight',
+				'cssho.vscode-svgviewer'
+			],
+			'sbrink.elm': [
+				'abadi199.elm-format'
+			],
+			'ng-42.ng-fortytwo-vscode-extension': [
+				'angulardoc.angulardoc-vscode'
+			],
+			'johnaaronnelson.forcecode': [
+				'johnaaronnelson.visualforce',
+				'johnaaronnelson.apex',
+				'chuckjonas.apex-autocomplete'
+			],
+			'silverbulleters.gherkin-autocomplete': [
+				'stevejpurves.cucumber'
+			],
+			'junstyle.php-cs-fixer': [
+				'neilbrayfield.php-docblocker',
+				'linyang95.php-symbols'
+			],
+			'esbenp.prettier-vscode': [
+				'dbaeumer.vscode-eslint',
+				'christian-kohler.path-intellisense',
+				'flowtype.flow-for-vscode'
+			],
+			'dcr30.lualinter': [
+				'xxxg0001.lua-for-vscode',
+				'gccfeli.vscode-lua',
+				'trixnz.vscode-lua'
+			],
+			'hookyqr.createmodule': [
+				'gegeke.node-modules-navigation'
+			],
+			'ms-vscode.cpptools': [
+				'donjayamanne.python',
+				'austin.code-gnu-global',
+				'ms-vscode.csharp'
+			],
+			'chrmarti.regex': [
+				'bierner.color-info'
+			],
+			'castwide.solargraph': [
+				'otoniel-isidoro.vscode-ruby-ctags'
+			],
+			'ionic-preview.ionic-preview': [
+				'danielehrhardt.ionic3-vs-ionview-snippets',
+				'siteslave.ionic3-snippets',
+				'oudzy.ionic2-snippets'
+			],
+			'cake-build.cake-vscode': [
+				'wk-j.cake-runner'
+			],
+			'infinity1207.angular2-switcher': [
+				'krizzdewizz.refactorix',
+				'natewallace.angular2-inline',
+				'alexiv.vscode-angular2-files'
+			],
+			'mkloubert.vs-script-commands': [
+				'mkloubert.vs-cron',
+				'mkloubert.vs-rest-api',
+				'mkloubert.vs-deploy'
+			],
+			'ajshort.msg': [
+				'ajshort.ros'
+			],
+			'alefragnani.project-manager': [
+				'eamodio.gitlens',
+				'shan.code-settings-sync',
+				'christian-kohler.path-intellisense'
+			],
+			'thavarajan.ionic2': [
+				'danielehrhardt.ionic3-vs-ionview-snippets',
+				'vsmobile.cordova-tools',
+				'oudzy.ionic2-snippets'
+			],
+			'samverschueren.yo': [
+				'azuresdkteam.azurenodeessentials',
+				'visualstudioonlineapplicationinsights.application-insights',
+				'vsciot-vscode.azure-iot-toolkit'
+			],
+			'alexkrechik.cucumberautocomplete': [
+				'stevejpurves.cucumber'
+			],
+			'nadako.vshaxe': [
+				'wiggin77.codedox',
+				'openfl.lime-vscode-extension'
+			],
+			'k--kato.docomment': [
+				'jchannon.csharpextensions'
+			],
+			'avli.clojure': [
+				'shaunlebron.vscode-parinfer',
+				'clptn.code-paredit',
+				'stiansivertsen.visualclojure'
+			],
+			'jpogran.puppet-vscode': [
+				'bitzl.vscode-puppet'
+			],
+			'schroeter.prettier-vscode-space-parenthesis': [
+				'bysabi.prettier-vscode-standard',
+				'bysabi.prettier-vscode-semistandard'
+			],
+			'yzane.markdown-pdf': [
+				'alanwalk.markdown-toc'
+			],
+			'ajshort.ros': [
+				'ajshort.msg'
+			],
+			'vstirbu.vscode-mermaid-preview': [
+				'bierner.markdown-mermaid'
+			],
+			'mrmlnc.vscode-less': [
+				'mrcrowl.easy-less'
+			],
+			'jakethashi.vscode-angular2-emmet': [
+				'natewallace.angular2-inline',
+				'infinity1207.angular2-switcher',
+				'angular.ng-template'
+			],
+			'kisstkondoros.vscode-codemetrics': [
+				'wix.vscode-import-cost'
+			],
+			'joshjg.vscode-credo': [
+				'iampeterbanjo.elixirlinter',
+				'jameshrisho.vscode-exfmt',
+				'mjmcloug.vscode-elixir'
+			],
+			'dbaeumer.jshint': [
+				'hookyqr.beautify',
+				'christian-kohler.npm-intellisense',
+				'eg2.vscode-npm-script'
+			],
+			'matthewferreira.cppcheck': [
+				'ajshort.include-autocomplete'
+			],
+			'hookyqr.beautify': [
+				'dbaeumer.vscode-eslint',
+				'robertohuertasm.vscode-icons',
+				'christian-kohler.path-intellisense'
+			],
+			'waderyan.gitblame': [
+				'eamodio.gitlens',
+				'editorconfig.editorconfig'
+			],
+			'jakebecker.elixir-ls': [
+				'ptd.vscode-elixirc-mix-linter',
+				'jameshrisho.vscode-exfmt',
+				'iampeterbanjo.elixirlinter'
+			],
+			'jcanero.hoogle-vscode': [
+				'vans.haskero',
+				'justusadam.language-haskell',
+				'hoovercj.haskell-linter'
+			],
+			'mike-zhou.component-creator': [
+				'onixie.angular-component-extension',
+				'mf.ng-utils',
+				'qinxch.vscode-add-angular2-files'
+			],
+			'dsnake.java-debug': [
+				'georgewfraser.vscode-javac',
+				'faustinoaq.javac-linter'
+			],
+			'ms-azuretools.vscode-azureappservice': [
+				'ms-vscode.azure-account',
+				'ms-azuretools.vscode-cosmosdb'
+			],
+			'onixie.angular-component-extension': [
+				'mike-zhou.component-creator',
+				'mf.ng-utils',
+				'sanderledegen.angular-follow-selector'
+			],
+			'mkloubert.vs-deploy': [
+				'mkloubert.vs-cron',
+				'mkloubert.vs-rest-api',
+				'mkloubert.vs-script-commands'
+			],
+			'linyang95.php-symbols': [
+				'neilbrayfield.php-docblocker',
+				'hvyindustries.crane',
+				'bmewburn.vscode-intelephense-client'
+			],
+			'rebornix.ruby': [
+				'misogi.ruby-rubocop',
+				'hoovercj.ruby-linter'
+			],
+			'2gua.rainbow-brackets': [
+				'oderwat.indent-rainbow',
+				'naumovs.color-highlight'
+			],
+			'wiggin77.codedox': [
+				'nadako.vshaxe',
+				'openfl.lime-vscode-extension',
+				'jarrio.hxmanager'
+			],
+			'johnpapa.azure-functions-tools': [
+				'bradygaster.azuretoolsforvscode',
+				'msazurermtools.azurerm-vscode-tools',
+				'visualstudioonlineapplicationinsights.application-insights'
+			],
+			'rbbit.typescript-hero': [
+				'angular.ng-template',
+				'eg2.tslint',
+				'pmneo.tsimporter'
+			],
+			'tomiturtiainen.rf-intellisense': [
+				'keith.robotframework',
+				'kmk-labs.robotf-extension'
+			],
+			'joelday.docthis': [
+				'formulahendry.auto-rename-tag',
+				'christian-kohler.path-intellisense',
+				'christian-kohler.npm-intellisense'
+			],
+			'azuresdkteam.azurenodeessentials': [
+				'samverschueren.yo',
+				'vsciot-vscode.azure-iot-toolkit',
+				'visualstudioonlineapplicationinsights.application-insights'
+			],
+			'yuzukwok.eggjs-dev-tools': [
+				'atian25.eggjs'
+			],
+			'juanblanco.solidity': [
+				'beaugunderson.solidity-extended'
+			],
+			'ionide.ionide-fsharp': [
+				'ionide.ionide-paket'
+			],
+			'hyesun.py-paste-indent': [
+				'linw1995.python-traceback-jumper',
+				'nils-ballmann.python-coding-tools'
+			],
+			'rust-lang.rust': [
+				'kalitaalexey.vscode-rust',
+				'bungcip.better-toml',
+				'saviorisdead.rustycode'
+			],
+			'ikuyadeu.r': [
+				'grapecity.gc-excelviewer'
+			],
+			'joshjg.generate-react-component': [
+				'lukazakrajsek.react-utils'
+			],
+			'bmewburn.vscode-intelephense-client': [
+				'neilbrayfield.php-docblocker',
+				'linyang95.php-symbols',
+				'hvyindustries.crane'
+			],
+			'eliean.vscode-svn': [
+				'fantasytyx.tortoise-svn'
+			],
+			'misogi.ruby-rubocop': [
+				'rebornix.ruby',
+				'hoovercj.ruby-linter'
+			],
+			'kube.clangcomplete': [
+				'l3dg3r.jlang-clang',
+				'ajshort.include-autocomplete',
+				'xaver.clang-format'
+			],
+			'pmneo.tsimporter': [
+				'dskwrk.vscode-generate-getter-setter',
+				'krizzdewizz.refactorix',
+				'infinity1207.angular2-switcher'
+			],
+			'borke.puppet': [
+				'jgreat.puppetlinter',
+				'bitzl.vscode-puppet'
+			],
+			'mkloubert.vs-cron': [
+				'mkloubert.vs-rest-api',
+				'mkloubert.vs-script-commands',
+				'mkloubert.vs-deploy'
+			],
+			'silverbulleters.sonarqube-inject': [
+				'sonarsource.sonarlint-vscode'
+			],
+			'kangping.luaide': [
+				'gccfeli.vscode-lua'
+			],
+			'webfreak.debug': [
+				'platformio.platformio-ide'
+			],
+			'shakram02.bash-beautify': [
+				'foxundermoon.shell-format'
+			],
+			'bierner.markdown-checkbox': [
+				'bierner.markdown-emoji'
+			],
+			'hackwaly.ocaml': [
+				'freebroccolo.reasonml',
+				'muchtrix.ocaml-tuareg-master'
+			],
+			'oudzy.ionic2-snippets': [
+				'thavarajan.ionic2',
+				'danielehrhardt.ionic3-vs-ionview-snippets',
+				'ionic-preview.ionic-preview'
+			],
+			'ritwickdey.live-sass': [
+				'ritwickdey.liveserver'
+			],
+			'xaver.clang-format': [
+				'mitaki28.vscode-clang',
+				'kube.clangcomplete'
+			],
+			'vscjava.vscode-java-debug': [
+				'redhat.java'
+			],
+			'gegeke.node-modules-navigation': [
+				'hookyqr.createmodule',
+				'sqlprovider.node-dependencies-view'
+			],
+			'ms-azuretools.vscode-cosmosdb': [
+				'ms-vscode.azure-account',
+				'ms-azuretools.vscode-azureappservice'
+			],
+			'foxundermoon.shell-format': [
+				'shakram02.bash-beautify'
+			],
+			'msazurermtools.azurerm-vscode-tools': [
+				'johnpapa.azure-functions-tools',
+				'bradygaster.azuretoolsforvscode',
+				'visualstudioonlineapplicationinsights.application-insights'
+			],
+			'lonefy.vscode-js-css-html-formatter': [
+				'ecmel.vscode-html-css',
+				'zignd.html-css-class-completion',
+				'hookyqr.beautify'
+			],
+			'mkloubert.vs-rest-api': [
+				'mkloubert.vs-cron',
+				'mkloubert.vs-script-commands',
+				'mkloubert.vs-deploy'
+			],
+			'acrolinx.vscode-sidebar': [
+				'microsoft.gauntlet'
+			],
+			'aaronphy.scss-scan': [
+				'lukazakrajsek.scss-refactoring'
+			],
+			'vsmobile.cordova-tools': [
+				'thavarajan.ionic2',
+				'danielehrhardt.ionic3-vs-ionview-snippets',
+				'steoates.autoimport'
+			],
+			'pranaygp.vscode-css-peek': [
+				'bierner.color-info'
+			],
+			'nils-ballmann.python-coding-tools': [
+				'hyesun.py-paste-indent',
+				'linw1995.python-traceback-jumper'
+			],
+			'octref.vetur': [
+				'formulahendry.auto-rename-tag',
+				'ecmel.vscode-html-css',
+				'formulahendry.auto-close-tag'
+			],
+			'austin.code-gnu-global': [
+				'mitaki28.vscode-clang',
+				'ms-vscode.cpptools'
+			],
+			'telerik.nativescript': [
+				'joshdsommer.vscode-add-angular-native-files'
+			],
+			'eamodio.gitlens': [
+				'alefragnani.project-manager',
+				'christian-kohler.path-intellisense',
+				'dbaeumer.vscode-eslint'
+			],
+			'hoovercj.ruby-linter': [
+				'misogi.ruby-rubocop',
+				'miguel-savignano.ruby-symbols',
+				'otoniel-isidoro.vscode-ruby-ctags'
+			],
+			'xxxg0001.lua-for-vscode': [
+				'dcr30.lualinter',
+				'gccfeli.vscode-lua',
+				'trixnz.vscode-lua'
+			],
+			'noku.rails-run-spec-vscode': [
+				'sporto.rails-go-to-spec'
+			],
+			'jchannon.csharpextensions': [
+				'k--kato.docomment',
+				'schneiderpat.aspnet-helper'
+			],
+			'ikappas.phpcs': [
+				'neilbrayfield.php-docblocker',
+				'hvyindustries.crane',
+				'felixfbecker.php-intellisense'
+			],
+			'bagonaut.mongogo': [
+				'ms-vscode-devlab.vscode-mongodb'
+			],
+			'hangxingliu.vscode-nginx-conf-hint': [
+				'shanoor.vscode-nginx',
+				'jiejie.lua-nginx-snippets'
+			],
+			'michelemelluso.code-beautifier': [
+				'ecmel.vscode-html-css'
+			],
+			'ptd.vscode-elixirc-mix-linter': [
+				'jakebecker.elixir-ls',
+				'jameshrisho.vscode-exfmt',
+				'mjmcloug.vscode-elixir'
+			],
+			'saviorisdead.rustycode': [
+				'kalitaalexey.vscode-rust',
+				'rust-lang.rust'
+			],
+			'peterjausovec.vscode-docker': [
+				'dbaeumer.vscode-eslint',
+				'eg2.vscode-npm-script',
+				'editorconfig.editorconfig'
+			],
+			'siteslave.ionic3-snippets': [
+				'danielehrhardt.ionic3-vs-ionview-snippets',
+				'ionic-preview.ionic-preview',
+				'oudzy.ionic2-snippets'
+			],
+			'krizzdewizz.refactorix': [
+				'infinity1207.angular2-switcher',
+				'dskwrk.vscode-generate-getter-setter',
+				'pmneo.tsimporter'
+			],
+			'bookworms.code-react-instyle': [
+				'lukazakrajsek.react-utils'
+			],
+			'visualstudioonlineapplicationinsights.application-insights': [
+				'vsciot-vscode.azure-iot-toolkit',
+				'johnpapa.azure-functions-tools',
+				'bradygaster.azuretoolsforvscode'
+			],
+			'formulahendry.azure-iot-toolkit': [
+				'vsciot-vscode.azure-iot-toolkit',
+				'visualstudioonlineapplicationinsights.application-insights'
+			],
+			'danielehrhardt.ionic3-vs-ionview-snippets': [
+				'thavarajan.ionic2',
+				'vsmobile.cordova-tools',
+				'oudzy.ionic2-snippets'
+			],
+			'alefragnani.pascal': [
+				'idleberg.innosetup'
+			],
+			'kasik96.format-indent': [
+				'hvyindustries.crane'
+			],
+			'vuhrmeister.vscode-meteor': [
+				'ramonitor.meteorhelper'
+			],
+			'naumovs.vscode-fuse-syntax': [
+				'ign97.fuse-vscode'
+			],
+			'alefragnani.bookmarks': [
+				'alefragnani.project-manager',
+				'shan.code-settings-sync'
+			],
+			'gccfeli.vscode-lua': [
+				'trixnz.vscode-lua',
+				'dcr30.lualinter',
+				'xxxg0001.lua-for-vscode'
+			],
+			'grapecity.gc-excelviewer': [
+				'ikuyadeu.r'
+			],
+			'freebroccolo.reasonml': [
+				'hackwaly.ocaml'
+			],
+			'donjayamanne.python': [
+				'tht13.python',
+				'ms-vscode.cpptools',
+				'peterjausovec.vscode-docker'
+			],
+			'ms-vscode.azure-account': [
+				'ms-azuretools.vscode-azureappservice',
+				'ms-azuretools.vscode-cosmosdb',
+				'formulahendry.azure-storage-explorer'
+			],
+			'coenraads.bracket-pair-colorizer': [
+				'natewallace.angular2-inline',
+				'angular.ng-template',
+				'christian-kohler.path-intellisense'
+			],
+			'justusadam.language-haskell': [
+				'jcanero.hoogle-vscode',
+				'vans.haskero',
+				'hoovercj.haskell-linter'
+			],
+			'mkaufman.htmlhint': [
+				'ecmel.vscode-html-css'
+			],
+			'qnsolutions.swaggitor': [
+				'arjun.swagger-viewer'
+			],
+			'iampeterbanjo.elixirlinter': [
+				'mjmcloug.vscode-elixir',
+				'joshjg.vscode-credo',
+				'jameshrisho.vscode-exfmt'
+			],
+			'angular.ng-template': [
+				'natewallace.angular2-inline',
+				'coenraads.bracket-pair-colorizer',
+				'steoates.autoimport'
+			],
+			'bungcip.better-toml': [
+				'rust-lang.rust',
+				'kalitaalexey.vscode-rust'
+			],
+			'bierner.markdown-emoji': [
+				'bierner.markdown-checkbox'
+			],
+			'ciena-blueplanet.ember-addon-snippets': [
+				'max-david.vs-ember-helper'
+			],
+			'schneiderpat.aspnet-helper': [
+				'jchannon.csharpextensions'
+			],
+			'vector-of-bool.cmake-tools': [
+				'twxs.cmake',
+				'maddouri.cmake-tools-helper'
+			],
+			'mitaki28.vscode-clang': [
+				'austin.code-gnu-global',
+				'xaver.clang-format'
+			],
+			'natewallace.angular2-inline': [
+				'angular.ng-template',
+				'coenraads.bracket-pair-colorizer',
+				'infinity1207.angular2-switcher'
+			],
+			'ms-vscode.csharp': [
+				'eg2.tslint',
+				'robertohuertasm.vscode-icons',
+				'ms-vscode.cpptools'
+			],
+			'yahya-gilany.vscode-pomodoro': [
+				'ecodes.vscode-phpmd'
+			],
+			'twxs.cmake': [
+				'vector-of-bool.cmake-tools',
+				'maddouri.cmake-tools-helper'
+			],
+			'georgewfraser.vscode-javac': [
+				'dsnake.java-debug',
+				'faustinoaq.javac-linter'
+			],
+			'lukazakrajsek.scss-refactoring': [
+				'aaronphy.scss-scan'
+			],
+			'taichi.react-beautify': [
+				'timothymclane.react-redux-es6-snippets',
+				'vsmobile.vscode-react-native'
+			],
+			'mdickin.markdown-shortcuts': [
+				'alanwalk.markdown-toc'
+			],
+			'felixfbecker.php-intellisense': [
+				'neilbrayfield.php-docblocker',
+				'hvyindustries.crane',
+				'ikappas.phpcs'
+			],
+			'felixrieseberg.vsc-ember-cli': [
+				'emberjs.vscode-ember'
+			],
+			'formulahendry.auto-close-tag': [
+				'formulahendry.auto-rename-tag',
+				'christian-kohler.path-intellisense',
+				'ecmel.vscode-html-css'
+			],
+			'zignd.html-css-class-completion': [
+				'ecmel.vscode-html-css',
+				'christian-kohler.path-intellisense',
+				'formulahendry.auto-close-tag'
+			],
+			'vsmobile.vscode-react-native': [
+				'dbaeumer.vscode-eslint',
+				'formulahendry.auto-close-tag',
+				'esbenp.prettier-vscode'
+			],
+			'otoniel-isidoro.vscode-ruby-ctags': [
+				'miguel-savignano.ruby-symbols',
+				'hoovercj.ruby-linter',
+				'castwide.solargraph'
+			],
+			'flet.vscode-semistandard': [
+				'homerjam.vscode-semistandard-format'
+			],
+			'ms-vscode-devlab.vscode-mongodb': [
+				'bagonaut.mongogo'
+			],
+			'abadi199.elm-format': [
+				'sbrink.elm',
+				'joeandaverde.vscode-elm-jump'
+			],
+			'mkxml.vscode-filesize': [
+				'mikey.vscode-fileheader'
+			],
+			'ajshort.include-autocomplete': [
+				'jbenden.c-cpp-flylint',
+				'kube.clangcomplete',
+				'matthewferreira.cppcheck'
+			],
+			'equinusocio.vsc-material-theme': [
+				'pkief.material-icon-theme'
+			],
+			'ecodes.vscode-phpmd': [
+				'yahya-gilany.vscode-pomodoro'
+			],
+			'sonarsource.sonarlint-vscode': [
+				'silverbulleters.sonarqube-inject'
+			],
+			'cssho.vscode-svgviewer': [
+				'wayou.vscode-todo-highlight'
+			],
+			'sophisticode.php-formatter': [
+				'felixfbecker.php-intellisense',
+				'hvyindustries.crane',
+				'linyang95.php-symbols'
+			],
+			'joshdsommer.vscode-add-angular-native-files': [
+				'telerik.nativescript',
+				'alexrainman.vscode-add-nativescript-files'
+			],
+			'ionide.ionide-paket': [
+				'ionide.ionide-fake',
+				'ionide.ionide-fsharp'
+			],
+			'sanderledegen.angular-follow-selector': [
+				'onixie.angular-component-extension'
+			],
+			'vans.haskero': [
+				'jcanero.hoogle-vscode',
+				'justusadam.language-haskell',
+				'hoovercj.haskell-linter'
+			],
+			'mjmcloug.vscode-elixir': [
+				'iampeterbanjo.elixirlinter',
+				'joshjg.vscode-credo',
+				'ptd.vscode-elixirc-mix-linter'
+			],
+			'leizongmin.node-module-intellisense': [
+				'christian-kohler.npm-intellisense'
+			],
+			'eg2.vscode-npm-script': [
+				'christian-kohler.npm-intellisense',
+				'dbaeumer.vscode-eslint',
+				'christian-kohler.path-intellisense'
+			],
+			'shanoor.vscode-nginx': [
+				'hangxingliu.vscode-nginx-conf-hint',
+				'jiejie.lua-nginx-snippets'
+			],
+			'platformio.platformio-ide': [
+				'webfreak.debug'
+			],
+			'stevejpurves.cucumber': [
+				'alexkrechik.cucumberautocomplete',
+				'silverbulleters.gherkin-autocomplete'
+			],
+			'dskwrk.vscode-generate-getter-setter': [
+				'pmneo.tsimporter',
+				'krizzdewizz.refactorix',
+				'infinity1207.angular2-switcher'
+			],
+			'arjun.swagger-viewer': [
+				'qnsolutions.swaggitor'
+			],
+			'yuce.erlang-otp': [
+				'nigelrook.vscode-linter-erlc',
+				'prokopiy.vscode-erlang-workbench'
+			],
+			'stringham.angular-template-formatter': [
+				'mf.ng-utils'
+			],
+			'christian-kohler.path-intellisense': [
+				'christian-kohler.npm-intellisense',
+				'formulahendry.auto-rename-tag',
+				'dbaeumer.vscode-eslint'
+			],
+			'bierner.color-info': [
+				'chrmarti.regex',
+				'pranaygp.vscode-css-peek'
+			],
+			'nwolverson.language-purescript': [
+				'nwolverson.ide-purescript'
+			],
+			'johnaaronnelson.visualforce': [
+				'johnaaronnelson.apex',
+				'johnaaronnelson.forcecode',
+				'chuckjonas.apex-autocomplete'
+			],
+			'alexrainman.vscode-add-nativescript-files': [
+				'codertonyb.vscode-nativescript-generator',
+				'joshdsommer.vscode-add-angular-native-files'
+			],
+			'flowtype.flow-for-vscode': [
+				'esbenp.prettier-vscode',
+				'vsmobile.vscode-react-native'
+			],
+			'shan.code-settings-sync': [
+				'alefragnani.project-manager',
+				'christian-kohler.path-intellisense',
+				'christian-kohler.npm-intellisense'
+			],
+			'pkief.material-icon-theme': [
+				'christian-kohler.path-intellisense',
+				'equinusocio.vsc-material-theme',
+				'editorconfig.editorconfig'
+			],
+			'hoovercj.vscode-ghc-mod': [
+				'hoovercj.haskell-linter',
+				'justusadam.language-haskell',
+				'ucl.haskelly'
+			],
+			'wix.vscode-import-cost': [
+				'kisstkondoros.vscode-codemetrics',
+				'shan.code-settings-sync'
+			],
+			'emberjs.vscode-ember': [
+				'felixrieseberg.vsc-ember-cli'
+			],
+			'wk-j.cake-runner': [
+				'cake-build.cake-vscode'
+			],
+			'ucl.haskelly': [
+				'justusadam.language-haskell',
+				'hoovercj.vscode-ghc-mod',
+				'hoovercj.haskell-linter'
+			],
+			'acidic9.p5js-snippets': [
+				'garrit.p5canvas'
+			],
+			'mrcrowl.easy-less': [
+				'mrmlnc.vscode-less'
+			],
+			'beaugunderson.solidity-extended': [
+				'juanblanco.solidity'
+			],
+			'naumovs.color-highlight': [
+				'formulahendry.auto-rename-tag',
+				'2gua.rainbow-brackets',
+				'formulahendry.auto-close-tag'
+			],
+			'tht13.python': [
+				'donjayamanne.python'
+			],
+			'maddouri.cmake-tools-helper': [
+				'vector-of-bool.cmake-tools',
+				'twxs.cmake'
+			],
+			'bierner.markdown-mermaid': [
+				'vstirbu.vscode-mermaid-preview'
+			],
+			'bradygaster.azuretoolsforvscode': [
+				'johnpapa.azure-functions-tools',
+				'msazurermtools.azurerm-vscode-tools',
+				'visualstudioonlineapplicationinsights.application-insights'
+			],
+			'salesforce.salesforcedx-vscode-apex': [
+				'salesforce.salesforcedx-vscode-lightning',
+				'salesforce.salesforcedx-vscode-core'
+			],
+			'editorconfig.editorconfig': [
+				'christian-kohler.path-intellisense',
+				'eg2.tslint',
+				'dbaeumer.vscode-eslint'
+			],
+			'fantasytyx.tortoise-svn': [
+				'eliean.vscode-svn'
+			],
+			'davidhelmer.mavensmate': [
+				'chuckjonas.apex-autocomplete',
+				'johnaaronnelson.visualforce',
+				'johnaaronnelson.apex'
+			],
+			'hoovercj.haskell-linter': [
+				'hoovercj.vscode-ghc-mod',
+				'justusadam.language-haskell',
+				'vigoo.stylish-haskell'
+			],
+			'kalitaalexey.vscode-rust': [
+				'rust-lang.rust',
+				'bungcip.better-toml',
+				'saviorisdead.rustycode'
+			],
+			'oderwat.indent-rainbow': [
+				'2gua.rainbow-brackets'
+			],
+			'dbaeumer.vscode-eslint': [
+				'hookyqr.beautify',
+				'christian-kohler.path-intellisense',
+				'eg2.tslint'
+			],
+			'christian-kohler.npm-intellisense': [
+				'eg2.vscode-npm-script',
+				'christian-kohler.path-intellisense',
+				'dbaeumer.vscode-eslint'
+			],
+			'vsciot-vscode.azure-iot-toolkit': [
+				'visualstudioonlineapplicationinsights.application-insights',
+				'johnpapa.azure-functions-tools',
+				'bradygaster.azuretoolsforvscode'
+			],
+			'ritwickdey.liveserver': [
+				'ritwickdey.live-sass'
+			],
+			'linw1995.python-traceback-jumper': [
+				'hyesun.py-paste-indent',
+				'nils-ballmann.python-coding-tools'
+			],
+			'redhat.java': [
+				'vscjava.vscode-java-debug'
+			],
+			'johnaaronnelson.apex': [
+				'johnaaronnelson.visualforce',
+				'johnaaronnelson.forcecode',
+				'chuckjonas.apex-autocomplete'
+			],
+			'robertohuertasm.vscode-icons': [
+				'hookyqr.beautify',
+				'dbaeumer.vscode-eslint',
+				'christian-kohler.path-intellisense'
+			],
+			'henriiik.vscode-perl': [
+				'sfodje.perltidy',
+				'sfodje.perlcritic',
+				'kaktus.perltidy-more'
+			],
+			'hookyqr.githubissues': [
+				'dt.ghlink'
+			],
+			'ecmel.vscode-html-css': [
+				'formulahendry.auto-rename-tag',
+				'zignd.html-css-class-completion',
+				'formulahendry.auto-close-tag'
+			]
+		};
+
+
+		let companions: string[] = allCompanions[extension.id.toLowerCase()];
+		if (!companions || companions.length === 0) {
+			return TPromise.as([]);
+		}
+
+		let options: IQueryOptions = {
+			names: companions,
+			source: 'companions'
+		};
+		companions = companions.map(x => x.toLowerCase());
+
+		return this.queryGallery(options).then(pager => {
+			let newFirstPage = new Array(pager.firstPage.length);
+			for (let i = 0; i < pager.firstPage.length; i++) {
+				let index = companions.indexOf(pager.firstPage[i].id.toLowerCase());
+				if (index === -1) {
+					break; // Something went wrong, Abort! Abort!
+				}
+				newFirstPage[index] = pager.firstPage[i];
+			}
+			return newFirstPage;
+		});
+
+	}
+
 	open(extension: IExtension, sideByside: boolean = false): TPromise<any> {
 		/* __GDPR__
 			"extensionGallery:open" : {
