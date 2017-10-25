@@ -325,3 +325,11 @@ export interface IExtensionTipsService {
 export const ExtensionsLabel = localize('extensions', "Extensions");
 export const ExtensionsChannelId = 'extensions';
 export const PreferencesLabel = localize('preferences', "Preferences");
+
+export const IExtensionRecommendationService = createDecorator<IExtensionRecommendationService>('extensionRecommendationService');
+
+export interface IExtensionRecommendationService {
+	_serviceBrand: any;
+	isEnabled(): boolean;
+	queryRelatedExtensions(extensionId: string): TPromise<string[]>;
+}

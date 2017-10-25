@@ -67,6 +67,7 @@ export interface IProductConfiguration {
 		'linux-x64': string;
 		'darwin': string;
 	};
+	extensionRecommendationServiceUrl: string;
 }
 
 export interface ISurveyData {

@@ -19,7 +19,7 @@ import { IDisposable, dispose } from 'vs/base/common/lifecycle';
 import { IPager, mapPager, singlePagePager } from 'vs/base/common/paging';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import {
-	IExtensionManagementService, IExtensionGalleryService, ILocalExtension, IGalleryExtension, IQueryOptions, IExtensionManifest,
+	IExtensionManagementService, IExtensionGalleryService, ILocalExtension, IGalleryExtension, IQueryOptions, IExtensionManifest, IExtensionRecommendationService,
 	InstallExtensionEvent, DidInstallExtensionEvent, LocalExtensionType, DidUninstallExtensionEvent, IExtensionEnablementService, IExtensionIdentifier
 } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { getGalleryExtensionIdFromLocal, getGalleryExtensionTelemetryData, getLocalExtensionTelemetryData, areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
@@ -337,7 +337,8 @@ export class ExtensionsWorkbenchService implements IExtensionsWorkbenchService {
 		@IURLService urlService: IURLService,
 		@IExtensionEnablementService private extensionEnablementService: IExtensionEnablementService,
 		@IWorkspaceContextService private workspaceContextService: IWorkspaceContextService,
-		@IWindowService private windowService: IWindowService
+		@IWindowService private windowService: IWindowService,
+		@IExtensionRecommendationService private extensionRecommendationService: IExtensionRecommendationService
 	) {
 		this.stateProvider = ext => this.getExtensionState(ext);
 
@@ -418,6 +419,32 @@ export class ExtensionsWorkbenchService implements IExtensionsWorkbenchService {
 				}
 				return new ExtensionDependencies(extension, extension.id, map);
 			});
+	}
+
+	loadCompanions(extension: IExtension): TPromise<IExtension[]> {
+		return this.extensionRecommendationService.queryRelatedExtensions(extension.id.toLowerCase()).then(companions => {
+			if (!companions || !companions.length) {
+				return [];
+			}
+
+			let options: IQueryOptions = {
+				names: companions,
+				source: 'companions'
+			};
+
+			companions = companions.map(x => x.toLowerCase());
+			return this.queryGallery(options).then(pager => {
+				let newFirstPage = new Array<IExtension>(pager.firstPage.length);
+				for (let i = 0; i < pager.firstPage.length; i++) {
+					let index = companions.indexOf(pager.firstPage[i].id.toLowerCase());
+					if (index === -1) {
+						break; // Something went wrong, Abort! Abort!
+					}
+					newFirstPage[index] = pager.firstPage[i];
+				}
+				return newFirstPage;
+			});
+		});
 	}
 
 	open(extension: IExtension, sideByside: boolean = false): TPromise<any> {
