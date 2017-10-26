@@ -14,5 +14,214 @@
 	"win32ShellNameShort": "C&ode - OSS",
 	"darwinBundleIdentifier": "com.visualstudio.code.oss",
 	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
-	"urlProtocol": "code-oss"
+	"urlProtocol": "code-oss",
+	"extensionsGallery": {
+		"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
+		"cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
+		"itemUrl": "https://marketplace.visualstudio.com/items"
+	},
+	"extensionTips": {
+		"ms-vscode.csharp": "{**/*.cs,**/project.json,**/global.json,**/*.csproj,**/*.sln,**/appsettings.json}",
+		"msjsdiag.debugger-for-chrome": "{**/*.ts,**/*.tsx**/*.js,**/*.jsx,**/*.es6,**/.babelrc}",
+		"lukehoban.Go": "**/*.go",
+		"ms-vscode.PowerShell": "{**/*.ps,**/*.ps1,**/*.ps.config,**/*.ps1.config}",
+		"austin.code-gnu-global": "{**/*.c,**/*.cpp,**/*.h}",
+		"Ionide.Ionide-fsharp": "{**/*.fsx,**/*.fsi,**/*.fs,**/*.ml,**/*.mli}",
+		"dbaeumer.vscode-eslint": "{**/*.js,**/*.jsx,**/*.es6,**/.eslintrc.*,**/.eslintrc,**/.babelrc,**/jsconfig.json}",
+		"dbaeumer.jshint": "{**/*.js,**/*.jsx,**/*.es6,**/.babelrc,**/jsconfig.json,**/.jshintrc,**/.jshintignore}",
+		"eg2.tslint": "{**/*.ts,**/*.tsx,**/tslint.json,**/tsconfig.json}",
+		"felixfbecker.php-debug": "{**/*.php,**/php.ini}",
+		"ikappas.phpcs": "{**/*.php,**/php.ini}",
+		"tht13.python": "{**/*.py}",
+		"donjayamanne.python": "{**/*.py}",
+		"magicstack.MagicPython": "{**/*.py}",
+		"rust-lang.rust": "{**/*.rs,**/*.rslib}",
+		"mitaki28.vscode-clang": "{**/*.cpp,**/*.cc,**/*.h}",
+		"ms-vscode.cpptools": "{**/*.c,**/*.cpp,**/*.cc,**/.cxx,**/*.hh,**/*.hpp,**/*.hxx,**/*.h}",
+		"DavidAnson.vscode-markdownlint": "{**/*.md}",
+		"PeterJausovec.vscode-docker": "{**/dockerfile,**/Dockerfile,**/docker-compose.yml,**/docker-compose.*.yml}",
+		"EditorConfig.EditorConfig": "{**/.editorconfig}",
+		"HookyQR.beautify": "{**/.jsbeautifyrc,**/*.js,**/*.jsx,**/*.es6,**/.eslintrc.*,**/.babelrc,**/jsconfig.json}",
+		"donjayamanne.githistory": "{**/.gitignore, **/.git}",
+		"felipecaputo.git-project-manager": "{**/.gitignore, **/.git}",
+		"eamodio.gitlens": "{**/.gitignore, **/.git}",
+		"rebornix.Ruby": "{**/*.rb,**/*.erb,**/*.reek,**/.fasterer.yml,**/ruby-lint.yml,**/.rubocop.yml}",
+		"DotJoshJohnson.xml": "{**/*.xml}",
+		"shinnn.stylelint": "{**/.stylelintrc,**/stylelint.config.js}",
+		"eg2.vscode-npm-script": "{**/package.json}",
+		"ms-mssql.mssql": "{**/*.sql}",
+		"ms-vscode.sublime-keybindings": "{**/.sublime-project, **/.sublime-workspace}",
+		"k--kato.intellij-idea-keybindings": "{**/.idea}",
+		"christian-kohler.npm-intellisense": "{**/package.json}",
+		"octref.vetur": "{**/*.vue}"
+	},
+	"extensionImportantTips": {
+		"ms-vscode.csharp": {
+			"name": "C#",
+			"pattern": "{**/*.cs,**/project.json,**/global.json,**/*.csproj,**/*.sln}"
+		},
+		"lukehoban.Go": {
+			"name": "Go",
+			"pattern": "**/*.go"
+		},
+		"donjayamanne.python": {
+			"name": "Python",
+			"pattern": "{**/*.py}"
+		},
+		"vscjava.vscode-java-pack": {
+			"name": "Java",
+			"pattern": "{**/*.java}"
+		},
+		"ms-vscode.PowerShell": {
+			"name": "PowerShell",
+			"pattern": "{**/*.ps,**/*.ps1}"
+		},
+		"ms-vscode.cpptools": {
+			"name": "C/C++",
+			"pattern": "{**/*.c,**/*.cpp,**/*.cc,**/.cxx,**/*.hh,**/*.hpp,**/*.hxx,**/*.h}"
+		},
+		"PeterJausovec.vscode-docker": {
+			"name": "Docker",
+			"pattern": "{**/dockerfile,**/Dockerfile,**/docker-compose.yml,**/docker-compose.*.yml}"
+		},
+		"ms-mssql.mssql": {
+			"name": "mssql",
+			"pattern": "{**/*.sql}"
+		},
+		"octref.vetur": {
+			"name": "Vetur",
+			"pattern": "{**/*.vue}"
+		}
+	},
+	"keymapExtensionTips": [
+		"vscodevim.vim",
+		"ms-vscode.sublime-keybindings",
+		"ms-vscode.atom-keybindings",
+		"ms-vscode.vs-keybindings",
+		"k--kato.intellij-idea-keybindings",
+		"hiro-sun.vscode-emacs",
+		"alphabotsec.vscode-eclipse-keybindings",
+		"alefragnani.delphi-keybindings"
+	],
+	"exeBasedExtensionTips": {
+		"az": {
+			"windowsPath": "%ProgramFiles(x86)%\\Microsoft SDKs\\Azure\\CLI2\\wbin\\az.cmd",
+			"recommendations": [
+				"ms-vscode.azurecli"
+			]
+		},
+		"aws": {
+			"windowsPath": "%ProgramFiles%\\Amazon\\AWSCLI\\aws.exe",
+			"recommendations": [
+				"ms-vscode.azurecli"
+			]
+		},
+		"doctl": {
+			"recommendations": [
+				"ms-vscode.azurecli"
+			]
+		},
+		"heroku": {
+			"windowsPath": "%ProgramFiles%\\Heroku\\bin\\heroku.exe",
+			"recommendations": [
+				"ms-azuretools.vscode-azureappservice",
+				"pkosta2005.heroku-command"
+			]
+		},
+		"mongo": {
+			"windowsPath": "%ProgramFiles\\MongoDB\\Server\\3.4\\bin\\mongod.exe",
+			"recommendations": [
+				"ms-azuretools.vscode-cosmosdb"
+			]
+		},
+		"serverless": {
+			"windowsPath": "%APPDATA%\\npm\\serverless.cmd",
+			"recommendations": [
+				"johnpapa.azure-functions-tools"
+			]
+		},
+		"mysql": {
+			"windowsPath": "%ProgramFiles%\\MySQL\\MySQL Server 5.7\\bin\\mysqld.exe",
+			"recommendations": [
+				"ms-mssql.mssql",
+				"bajdzis.vscode-database"
+			]
+		},
+		"postgres": {
+			"windowsPath": "%ProgramFiles%\\PostgreSQL\\9.6\\bin\\psql.exe",
+			"recommendations": [
+				"ms-mssql.mssql",
+				"bajdzis.vscode-database"
+			]
+		},
+		"sqlcmd": {
+			"recommendations": [
+				"ms-mssql.mssql"
+			]
+		},
+		"now": {
+			"windowsPath": "%APPDATA%\\npm\\now.cmd",
+			"recommendations": [
+				"ms-azuretools.vscode-azureappservice",
+				"PeterJausovec.vscode-docker"
+			]
+		},
+		"docker": {
+			"windowsPath": "%ProgramFiles%\\Docker\\Docker\\Resources\\bin\\docker.exe",
+			"recommendations": [
+				"PeterJausovec.vscode-docker"
+			]
+		},
+		"ng": {
+			"windowsPath": "%APPDATA%\\npmexit\\ng.cmd",
+			"recommendations": [
+				"johnpapa.Angular2"
+			]
+		},
+		"create-react-app": {
+			"windowsPath": "%APPDATA%\\npm\\create-react-app.cmd",
+			"recommendations": [
+				"vsmobile.vscode-react-native"
+			]
+		},
+		"git": {
+			"windowsPath": "%ProgramFiles%\\Git\\cmd\\git.exe",
+			"recommendations": [
+				"ms-vsts.team"
+			]
+		},
+		"tfx": {
+			"recommendations": [
+				"ms-vsts.team"
+			]
+		},
+		"p4": {
+			"recommendations": [
+				"slevesque.perforce"
+			]
+		},
+		"hg": {
+			"recommendations": [
+				"mrcrowl.hg"
+			]
+		},
+		"subl": {
+			"windowsPath": "%ProgramFiles%\\Sublime Text3\\sublime_text.exe",
+			"recommendations": [
+				"ms-vscode.sublime-keybindings"
+			]
+		},
+		"atom": {
+			"windowsPath": "%USERPROFILE%\\AppData\\Local\\atom\\bin\\atom.cmd",
+			"recommendations": [
+				"ms-vscode.atom-keybindings"
+			]
+		},
+		"vi": {
+			"windowsPath": "%ProgramFiles(x86)\\Vim\\vim80\\gvim.exe",
+			"recommendations": [
+				"vscodevim.vim"
+			]
+		}
+	}
 }
