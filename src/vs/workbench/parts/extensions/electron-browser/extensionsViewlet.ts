@@ -121,11 +121,11 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 
 	private registerViews(): void {
 		let viewDescriptors = [];
-		viewDescriptors.push(this.createMarketPlaceExtensionsListViewDescriptor());
-		viewDescriptors.push(this.createInstalledExtensionsListViewDescriptor());
-		viewDescriptors.push(this.createSearchInstalledExtensionsListViewDescriptor());
-		viewDescriptors.push(this.createRecommendedExtensionsListViewDescriptor());
 		viewDescriptors.push(this.createWorkspaceRecommendedExtensionsListViewDescriptor());
+		viewDescriptors.push(this.createRecommendedExtensionsListViewDescriptor());
+		viewDescriptors.push(this.createInstalledExtensionsListViewDescriptor());
+		viewDescriptors.push(this.createMarketPlaceExtensionsListViewDescriptor());
+		viewDescriptors.push(this.createSearchInstalledExtensionsListViewDescriptor());
 		ViewsRegistry.registerViews(viewDescriptors);
 	}
 
@@ -149,7 +149,7 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 			location: ViewLocation.Extensions,
 			ctor: InstalledExtensionsView,
 			when: ContextKeyExpr.and(ContextKeyExpr.not('searchExtensions'), ContextKeyExpr.not('recommendedExtensions')),
-			size: 50,
+			size: 20,
 			order: 3
 		};
 	}
@@ -173,7 +173,7 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 			location: ViewLocation.Extensions,
 			ctor: RecommendedExtensionsView,
 			when: ContextKeyExpr.and(ContextKeyExpr.not('searchExtensions')),
-			size: 50,
+			size: 200,
 			canToggleVisibility: true,
 			order: 2
 		};
@@ -319,9 +319,10 @@ export class ExtensionsViewlet extends PersistentViewsViewlet implements IExtens
 
 	private async doSearch(): TPromise<any> {
 		const value = this.searchBox.value || '';
-		this.searchExtensionsContextKey.set(!!value && value.trim() !== '@recommended');
+
 		this.searchInstalledExtensionsContextKey.set(InstalledExtensionsView.isInsalledExtensionsQuery(value));
 		this.recommendedExtensionsContextKey.set(value.trim() === '@recommended');
+		this.searchExtensionsContextKey.set(!!value && value.trim() !== '@recommended');
 
 		await this.updateViews([], !!value);
 	}
