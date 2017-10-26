@@ -114,14 +114,19 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
+	flex: 1;
 }
 
 .extensions-viewlet > .extensions .extension > .details > .header-container > .header > .subtext-container {
 	opacity: 0.85;
-	font-size: 80%;
+	font-size: 100%;
 	padding-left: 6px;
-	flex: 1;
+	flex: 0;
 	min-width: fit-content;
+}
+
+.extensions-viewlet > .extensions .extension > .details > .header-container > .header > .subtext-container > .octicon {
+	font-size: 100%;
 }
 
 .extensions-viewlet.narrow > .extensions .extension > .details > .header-container > .header > .name {
