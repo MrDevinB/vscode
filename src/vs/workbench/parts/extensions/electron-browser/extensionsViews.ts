@@ -47,6 +47,7 @@ export class ExtensionsListView extends ViewsViewletPanel {
 	private messageBox: HTMLElement;
 	private extensionsList: HTMLElement;
 	private badge: CountBadge;
+	private badgeContainer: HTMLElement;
 	private listActionBar: HTMLElement;
 	private list: PagedList<IExtension>;
 
@@ -75,8 +76,20 @@ export class ExtensionsListView extends ViewsViewletPanel {
 	renderHeader(container: HTMLElement): void {
 		const titleDiv = append(container, $('div.title'));
 		append(titleDiv, $('span')).textContent = this.options.name;
-		this.badge = new CountBadge(append(container, $('.count-badge-wrapper')));
+
+		this.badgeContainer = append(container, $('.count-badge-wrapper'));
+		this.badge = new CountBadge(this.badgeContainer);
 		this.disposables.push(attachBadgeStyler(this.badge, this.themeService));
+
+		this.listActionBar = append(container, $('.list-actionbar-container'));
+		const actionbar = new ActionBar(this.listActionBar, {
+			animated: false
+		});
+		actionbar.addListener(EventType.RUN, ({ error }) => error && this.messageService.show(Severity.Error, error));
+		const installAllAction = this.instantiationService.createInstance(InstallWorkspaceRecommendedExtensionsAction, InstallWorkspaceRecommendedExtensionsAction.ID, localize('installAll', "Install All"));
+		actionbar.push([installAllAction], { icon: true, label: true });
+
+		this.disposables.push(actionbar);
 	}
 
 	showRecommendedLabel() {
@@ -106,15 +119,7 @@ export class ExtensionsListView extends ViewsViewletPanel {
 			.filter(e => !!e)
 			.on(this.pin, this, this.disposables);
 
-		this.listActionBar = append(this.extensionsList, $('.list-actionbar-container'));
-		const actionbar = new ActionBar(this.listActionBar, {
-			animated: false
-		});
-		actionbar.addListener(EventType.RUN, ({ error }) => error && this.messageService.show(Severity.Error, error));
-		const installAllAction = this.instantiationService.createInstance(InstallWorkspaceRecommendedExtensionsAction, InstallWorkspaceRecommendedExtensionsAction.ID, localize('installAll', "Install All"));
-		actionbar.push([installAllAction], { icon: true, label: true });
 
-		this.disposables.push(actionbar);
 	}
 
 	layoutBody(size: number): void {
@@ -124,6 +129,8 @@ export class ExtensionsListView extends ViewsViewletPanel {
 
 	async show(query: string): TPromise<IPagedModel<IExtension>> {
 		toggleClass(this.listActionBar, 'hidden', !ExtensionsListView.isWorkspaceRecommendedExtensionsQuery(query));
+		toggleClass(this.badgeContainer, 'hidden', ExtensionsListView.isWorkspaceRecommendedExtensionsQuery(query));
+
 		const model = await this.query(query);
 		this.setModel(model);
 		return model;
@@ -552,12 +559,19 @@ export class RecommendedExtensionsView extends ExtensionsListView {
 	}
 
 	async show(query: string): TPromise<IPagedModel<IExtension>> {
-		if (RecommendedExtensionsView.isRecommendedExtensionsQuery(query)) {
-			return super.show(query);
-		}
-		let searchInstalledQuery = '@recommended:all';
-		searchInstalledQuery = query ? searchInstalledQuery + ' ' + query : searchInstalledQuery;
-		return super.show(searchInstalledQuery);
+		return super.show('@recommended');
+	}
+
+	showRecommendedLabel() {
+		return false;
+	}
+
+}
+
+export class WorkspaceRecommendedExtensionsView extends ExtensionsListView {
+
+	async show(query: string): TPromise<IPagedModel<IExtension>> {
+		return super.show('@recommended:workspace');
 	}
 
 	showRecommendedLabel() {

@@ -31,12 +31,15 @@
 	height: auto;
 }
 
-.extensions-viewlet > .extensions .extensions-list > .list-actionbar-container {
-	padding: 4px 7px;
+.extensions-viewlet > .extensions .list-actionbar-container {
+	font-size: 12px;
+	text-transform: none;
+	font-weight: normal;
 }
 
-.extensions-viewlet > .extensions .extensions-list > .list-actionbar-container.hidden,
-.extensions-viewlet > .extensions .extensions-list > .list-actionbar-container .monaco-action-bar .action-item.disabled  {
+.extensions-viewlet > .extensions .count-badge-wrapper.hidden,
+.extensions-viewlet > .extensions .list-actionbar-container.hidden,
+.extensions-viewlet > .extensions .list-actionbar-container .monaco-action-bar .action-item.disabled  {
 	display: none;
 }
 
