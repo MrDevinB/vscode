@@ -124,13 +124,13 @@
 	min-width: fit-content;
 }
 
-.extensions-viewlet > .extensions .extension > .details > .header-container > .header > .subtext-container > span.subtext.recommended {
-	color: white;
-	background-color: green;
-	border: solid 1px green;
-	border-radius: 10px;
-	padding: 0 5px;
+.extensions-viewlet.narrow > .extensions .extension > .details > .header-container > .header > .name {
+	flex: 1;
 }
+.extensions-viewlet.narrow > .extensions .extension > .details > .header-container > .header > .subtext-container {
+	flex: 0;
+}
+
 
 .extensions-viewlet > .extensions .extension > .details > .header-container > .header > .install-count:not(:empty) {
 	font-size: 80%;

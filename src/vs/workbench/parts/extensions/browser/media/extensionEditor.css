@@ -118,6 +118,10 @@
 	font-size: 13px;
 }
 
+.extension-editor > .header.recommended > .details > .recommendation > .octicon {
+	margin-right: 5px;
+}
+
 .extension-editor > .body {
 	height: calc(100% - 168px);
 	overflow: hidden;

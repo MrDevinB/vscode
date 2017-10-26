@@ -23,7 +23,6 @@ import { EventType } from 'vs/base/common/events';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
 import { IExtensionService } from 'vs/platform/extensions/common/extensions';
 import { IExtensionTipsService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { localize } from 'vs/nls';
 
 export interface ITemplateData {
 	root: HTMLElement;
@@ -154,15 +153,17 @@ export class Renderer implements IPagedRenderer<IExtension, ITemplateData> {
 		}
 
 		data.subText.textContent = isInstalled ? extension.version : '';
+		data.subText.title = '';
 		data.root.setAttribute('aria-label', extension.displayName);
-		removeClass(data.subText, 'recommended');
+		removeClass(data.subText, 'octicon');
+		removeClass(data.subText, 'octicon-thumbsup');
 
 		const extRecommendations = this.extensionTipsService.getAllRecommendationsWithReason();
 		if (extRecommendations[extension.id.toLowerCase()] && !isInstalled) {
 			data.root.setAttribute('aria-label', extension.displayName + '. ' + extRecommendations[extension.id]);
 			if (this.showRecommendedLabel) {
-				data.subText.textContent = localize('recommended', "Recommended");
-				addClass(data.subText, 'recommended');
+				addClass(data.subText, 'octicon');
+				addClass(data.subText, 'octicon-thumbsup');
 				data.subText.title = extRecommendations[extension.id.toLowerCase()];
 			}
 		}

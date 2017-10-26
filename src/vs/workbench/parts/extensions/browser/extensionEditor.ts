@@ -251,7 +251,9 @@ export class ExtensionEditor extends BaseEditor {
 		});
 		this.disposables.push(this.extensionActionBar);
 
-		this.recommendation = append(details, $('.recommendation'));
+		const recommendationSection = append(details, $('.recommendation'));
+		append(recommendationSection, $('span.octicon.octicon-thumbsup'));
+		this.recommendation = append(recommendationSection, $('span.recommendationText'));
 
 		chain(fromEventEmitter<{ error?: any; }>(this.extensionActionBar, 'run'))
 			.map(({ error }) => error)
