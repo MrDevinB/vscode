@@ -40,7 +40,8 @@ import { IProgressService } from 'vs/platform/progress/common/progress';
 import { CountBadge } from 'vs/base/browser/ui/countBadge/countBadge';
 import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
 import { EventType } from 'vs/base/common/events';
-import { InstallWorkspaceRecommendedExtensionsAction } from 'vs/workbench/parts/extensions/browser/extensionsActions';
+import { InstallWorkspaceRecommendedExtensionsAction, ConfigureWorkspaceRecommendedExtensionsAction } from 'vs/workbench/parts/extensions/browser/extensionsActions';
+import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
 
 export class ExtensionsListView extends ViewsViewletPanel {
 
@@ -68,7 +69,8 @@ export class ExtensionsListView extends ViewsViewletPanel {
 		@IExtensionTipsService private tipsService: IExtensionTipsService,
 		@IModeService private modeService: IModeService,
 		@ITelemetryService private telemetryService: ITelemetryService,
-		@IProgressService private progressService: IProgressService
+		@IProgressService private progressService: IProgressService,
+		@IWorkspaceContextService private workspaceContextService: IWorkspaceContextService
 	) {
 		super({ ...(options as IViewOptions), ariaHeaderLabel: options.name }, keybindingService, contextMenuService);
 	}
@@ -87,7 +89,11 @@ export class ExtensionsListView extends ViewsViewletPanel {
 		});
 		actionbar.addListener(EventType.RUN, ({ error }) => error && this.messageService.show(Severity.Error, error));
 		const installAllAction = this.instantiationService.createInstance(InstallWorkspaceRecommendedExtensionsAction, InstallWorkspaceRecommendedExtensionsAction.ID, localize('installAll', "Install All"));
+		const configureAction = this.instantiationService.createInstance(ConfigureWorkspaceRecommendedExtensionsAction, ConfigureWorkspaceRecommendedExtensionsAction.ID, ConfigureWorkspaceRecommendedExtensionsAction.LABEL);
+		configureAction.class = 'octicon octicon-pencil';
+
 		actionbar.push([installAllAction], { icon: true, label: true });
+		actionbar.push([configureAction], { icon: true, label: false });
 
 		this.disposables.push(actionbar);
 	}
@@ -133,6 +139,14 @@ export class ExtensionsListView extends ViewsViewletPanel {
 
 		const model = await this.query(query);
 		this.setModel(model);
+
+		this.setExpanded(model && model.length > 0);
+
+
+		if (ExtensionsListView.isWorkspaceRecommendedExtensionsQuery(query) && this.workspaceContextService.getWorkbenchState() !== WorkbenchState.EMPTY) {
+			// Show the edit icon
+		}
+
 		return model;
 	}
 

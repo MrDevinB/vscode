@@ -43,6 +43,11 @@
 	display: none;
 }
 
+.extensions-viewlet > .extensions .list-actionbar-container .monaco-action-bar .action-item > .octicon {
+	font-size: 12px;
+	line-height: 1;
+}
+
 .extensions-viewlet > .extensions .extensions-list.hidden,
 .extensions-viewlet > .extensions .message.hidden {
 	display: none;
