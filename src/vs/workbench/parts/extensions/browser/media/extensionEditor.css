@@ -119,6 +119,11 @@
 }
 
 .extension-editor > .body {
+	height: calc(100% - 268px);
+	overflow: hidden;
+}
+
+.extension-editor.no-footer > .body {
 	height: calc(100% - 168px);
 	overflow: hidden;
 }
@@ -324,4 +329,159 @@
 	font-size: 90%;
 	font-weight: 600;
 	opacity: 0.6;
+}
+
+.extension-editor.no-footer > .footer {
+	display: none;
+}
+
+.extension-editor > .footer {
+	width: 100%;
+	height: 80px;
+	background: rgba(128, 128, 128, 0.15);
+	padding: 10px 20px;
+}
+
+.extension-editor > .footer .extensionAdsHeader {
+	font-size: 20px;
+	margin-bottom: 5px;
+}
+
+.extension-editor > .footer .extension-container {
+	height: 70px;
+	overflow: hidden;
+}
+
+.extension-editor > .footer .extension-container .monaco-list[tabindex="0"]:focus {
+	outline: none;
+}
+
+/* Copy from extensionsview start */
+
+.extension-editor > .footer .extension {
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	padding: 0 11px 0 16px;
+	overflow: hidden;
+	display: flex;
+}
+
+.extension-editor > .footer .extension > .icon {
+	width: 42px;
+	height: 42px;
+	padding: 10px 14px 10px 0;
+	flex-shrink: 0;
+	object-fit: contain;
+}
+
+.extension-editor > .footer .extension > .details {
+	flex: 1;
+	padding: 4px 0;
+	overflow: hidden;
+}
+
+.extension-editor > .footer .extension > .details > .header-container {
+	height: 19px;
+	display: flex;
+	overflow: hidden;
+}
+
+.extension-editor > .footer .extension > .details > .header-container > .header {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: nowrap;
+	overflow: hidden;
+	flex: 1;
+	min-width: 0;
+}
+
+.extension-editor > .footer .extension > .details > .header-container > .header > .name {
+	font-weight: bold;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.extension-editor > .footer .extension > .details > .header-container > .header > .version {
+	opacity: 0.85;
+	font-size: 80%;
+	padding-left: 6px;
+	flex: 1;
+	min-width: fit-content;
+}
+
+.extension-editor > .footer .extension > .details > .header-container > .header > .install-count:not(:empty) {
+	font-size: 80%;
+	margin: 0 6px;
+}
+
+.extension-editor > .footer .extension > .details > .header-container > .header > .install-count > .octicon {
+	font-size: 100%;
+	margin-right: 2px;
+}
+
+.extension-editor > .footer .extension > .details > .header-container > .header > .ratings {
+	text-align: right;
+}
+
+.extensions-viewlet.narrow > .extensions .extension > .details > .header-container > .header > .ratings,
+.extensions-viewlet.narrow > .extensions .extension > .details > .header-container > .header > .install-count {
+	display: none;
+}
+
+.extension-editor > .footer .extension > .details > .footer {
+	display: flex;
+	justify-content: flex-end;
+	height: 18px;
+	overflow: hidden;
+}
+
+.extension-editor > .footer .extension > .details > .footer > .author {
+	flex: 1;
+	font-size: 90%;
+	padding-right: 6px;
+	opacity: 0.6;
+	font-weight: 600;
+}
+
+.extension-editor > .footer .extension > .details > .footer > .monaco-action-bar > .actions-container {
+	flex-wrap: wrap-reverse;
+}
+
+.extension-editor > .footer .extension > .details > .footer > .monaco-action-bar .action-label {
+	margin-right: 0;
+	margin-left: 0.3em;
+	line-height: 15px;
+}
+
+.extension-editor > .footer .extension > .details > .footer > .monaco-action-bar .action-label:not(:empty) {
+	opacity: 0.9;
+}
+
+.extension-editor > .footer .extension.disabled > .icon,
+.extension-editor > .footer .extension.disabled > .details > .header-container,
+.extension-editor > .footer .extension.disabled > .details > .description
+.extension-editor > .footer .extension.disabled > .details > .footer > .author {
+	opacity: 0.5;
+}
+
+.extension-editor > .footer .extension .ellipsis {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+/* Copy from extensionsview end */
+
+.extension-editor > .footer .monaco-list-row {
+	width: 33%;
+	min-width: 400px;
+	max-width: 500px;
+	float: left;
+	position: static;
+}
+
+.extension-editor > .footer .extension {
+	padding: 0 20px 0 0;
 }

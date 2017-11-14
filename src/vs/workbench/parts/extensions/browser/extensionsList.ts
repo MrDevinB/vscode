@@ -11,7 +11,7 @@ import { Action } from 'vs/base/common/actions';
 import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IMessageService, Severity } from 'vs/platform/message/common/message';
-import { IDelegate } from 'vs/base/browser/ui/list/list';
+import { IDelegate, IRenderer } from 'vs/base/browser/ui/list/list';
 import { IPagedRenderer } from 'vs/base/browser/ui/list/listPaging';
 import { once } from 'vs/base/common/event';
 import { domEvent } from 'vs/base/browser/event';
@@ -45,7 +45,7 @@ export class Delegate implements IDelegate<IExtension> {
 
 const actionOptions = { icon: true, label: true };
 
-export class Renderer implements IPagedRenderer<IExtension, ITemplateData> {
+export class Renderer implements IRenderer<IExtension, ITemplateData> {
 
 	constructor(
 		@IInstantiationService private instantiationService: IInstantiationService,
@@ -120,20 +120,6 @@ export class Renderer implements IPagedRenderer<IExtension, ITemplateData> {
 		};
 	}
 
-	renderPlaceholder(index: number, data: ITemplateData): void {
-		addClass(data.element, 'loading');
-
-		data.root.removeAttribute('aria-label');
-		data.extensionDisposables = dispose(data.extensionDisposables);
-		data.icon.src = '';
-		data.name.textContent = '';
-		data.author.textContent = '';
-		data.description.textContent = '';
-		data.installCount.style.display = 'none';
-		data.ratings.style.display = 'none';
-		data.extension = null;
-	}
-
 	renderElement(extension: IExtension, index: number, data: ITemplateData): void {
 		removeClass(data.element, 'loading');
 
@@ -177,5 +163,22 @@ export class Renderer implements IPagedRenderer<IExtension, ITemplateData> {
 
 	disposeTemplate(data: ITemplateData): void {
 		data.disposables = dispose(data.disposables);
+	}
+}
+
+
+export class PagedRenderer extends Renderer implements IPagedRenderer<IExtension, ITemplateData> {
+	renderPlaceholder(index: number, data: ITemplateData): void {
+		addClass(data.element, 'loading');
+
+		data.root.removeAttribute('aria-label');
+		data.extensionDisposables = dispose(data.extensionDisposables);
+		data.icon.src = '';
+		data.name.textContent = '';
+		data.author.textContent = '';
+		data.description.textContent = '';
+		data.installCount.style.display = 'none';
+		data.ratings.style.display = 'none';
+		data.extension = null;
 	}
 }

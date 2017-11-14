@@ -64,14 +64,14 @@
 	display: none;
 }
 
-.extensions-viewlet > .extensions .monaco-list-row.recommended > .bookmark {
+/* .extensions-viewlet > .extensions .monaco-list-row.recommended > .bookmark {
 	display: inline-block;
 	height: 20px;
 	width: 20px;
 	border-right: 20px solid transparent;
 	border-top: 20px solid;
 	box-sizing: border-box;
-}
+} */
 
 .extensions-viewlet > .extensions .monaco-list-row > .bookmark > .octicon {
 	position: absolute;

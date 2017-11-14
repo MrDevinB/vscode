@@ -30,6 +30,7 @@ import { ResolvedKeybinding, KeyMod, KeyCode } from 'vs/base/common/keyCodes';
 import { ExtensionsInput } from 'vs/workbench/parts/extensions/common/extensionsInput';
 import { IExtensionsWorkbenchService, IExtensionsViewlet, VIEWLET_ID, IExtension, IExtensionDependencies } from 'vs/workbench/parts/extensions/common/extensions';
 import { Renderer, DataSource, Controller } from 'vs/workbench/parts/extensions/browser/dependenciesViewer';
+import { Renderer as ListRenderer, Delegate } from 'vs/workbench/parts/extensions/browser/extensionsList';
 import { RatingsWidget, InstallWidget } from 'vs/workbench/parts/extensions/browser/extensionsWidgets';
 import { EditorOptions } from 'vs/workbench/common/editor';
 import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
@@ -53,6 +54,7 @@ import { Command, ICommandOptions } from 'vs/editor/browser/editorExtensions';
 import { IWorkbenchEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { KeybindingsRegistry } from 'vs/platform/keybinding/common/keybindingsRegistry';
 import { Color } from 'vs/base/common/color';
+import { List } from 'vs/base/browser/ui/list/listWidget';
 
 /**  A context key that is set when an extension editor webview has focus. */
 export const KEYBINDING_CONTEXT_EXTENSIONEDITOR_WEBVIEW_FOCUS = new RawContextKey<boolean>('extensionEditorWebviewFocus', undefined);
@@ -164,11 +166,16 @@ export class ExtensionEditor extends BaseEditor {
 	private content: HTMLElement;
 	private recommendation: HTMLElement;
 	private header: HTMLElement;
+	private extensionCompanionsSection: HTMLElement;
+	private root: HTMLElement;
+
+	private companionList: List<IExtension>;
 
 	private extensionReadme: Cache<string>;
 	private extensionChangelog: Cache<string>;
 	private extensionManifest: Cache<IExtensionManifest>;
 	private extensionDependencies: Cache<IExtensionDependencies>;
+	private extensionCompanions: Cache<IExtension[]>;
 
 	private contextKey: IContextKey<boolean>;
 	private findInputFocusContextKey: IContextKey<boolean>;
@@ -199,6 +206,7 @@ export class ExtensionEditor extends BaseEditor {
 		this.extensionChangelog = null;
 		this.extensionManifest = null;
 		this.extensionDependencies = null;
+		this.extensionCompanions = null;
 		this.contextKey = KEYBINDING_CONTEXT_EXTENSIONEDITOR_WEBVIEW_FOCUS.bindTo(this.contextKeyService);
 		this.findInputFocusContextKey = KEYBINDING_CONTEXT_EXTENSIONEDITOR_FIND_WIDGET_INPUT_FOCUSED.bindTo(this.contextKeyService);
 	}
@@ -206,8 +214,8 @@ export class ExtensionEditor extends BaseEditor {
 	createEditor(parent: Builder): void {
 		const container = parent.getHTMLElement();
 
-		const root = append(container, $('.extension-editor'));
-		this.header = append(root, $('.header'));
+		this.root = append(container, $('.extension-editor'));
+		this.header = append(this.root, $('.header'));
 
 		this.icon = append(this.header, $<HTMLImageElement>('img.icon', { draggable: false }));
 
@@ -255,10 +263,34 @@ export class ExtensionEditor extends BaseEditor {
 			.filter(error => !!error)
 			.on(this.onError, this, this.disposables);
 
-		const body = append(root, $('.body'));
+		const body = append(this.root, $('.body'));
 		this.navbar = new NavBar(body);
 
 		this.content = append(body, $('.content'));
+
+		const footer = append(this.root, $('.footer'));
+		let extensionAdsHeader: HTMLElement = $('.extensionAdsHeader');
+		extensionAdsHeader.textContent = 'People using this extension also use:';
+		append(footer, extensionAdsHeader);
+
+		this.extensionCompanionsSection = append(footer, $('.extension-container'));
+
+		const delegate = new Delegate();
+		const renderer = this.instantiationService.createInstance(ListRenderer);
+		this.companionList = new List(this.extensionCompanionsSection, delegate, [renderer]);
+		this.companionList.layout(200);
+		this.disposables.push(attachListStyler(this.companionList, this.themeService));
+		this.disposables.push(this.listService.register(this.companionList));
+
+		chain(this.companionList.onSelectionChange)
+			.map(e => e.elements[0])
+			.filter(e => !!e)
+			.on(this.openExtension, this, this.disposables);
+
+	}
+
+	private openExtension(extension: IExtension): void {
+		this.extensionsWorkbenchService.open(extension).done(null, err => this.onError(err));
 	}
 
 	setInput(input: ExtensionsInput, options: EditorOptions): TPromise<void> {
@@ -279,6 +311,7 @@ export class ExtensionEditor extends BaseEditor {
 		this.extensionChangelog = new Cache(() => extension.getChangelog());
 		this.extensionManifest = new Cache(() => extension.getManifest());
 		this.extensionDependencies = new Cache(() => this.extensionsWorkbenchService.loadDependencies(extension));
+		this.extensionCompanions = new Cache(() => this.extensionsWorkbenchService.loadCompanions(extension));
 
 		const onError = once(domEvent(this.icon, 'error'));
 		onError(() => this.icon.src = extension.iconUrlFallback, null, this.transientDisposables);
@@ -357,6 +390,15 @@ export class ExtensionEditor extends BaseEditor {
 		this.navbar.push(NavbarSection.Dependencies, localize('dependencies', "Dependencies"));
 
 		this.content.innerHTML = '';
+
+		this.extensionCompanions.get().then(companions => {
+			if (!companions || companions.length === 0) {
+				addClass(this.root, 'no-footer');
+				return;
+			}
+			removeClass(this.root, 'no-footer');
+			this.companionList.splice(0, this.companionList.length, companions);
+		});
 
 		return super.setInput(input, options);
 	}
