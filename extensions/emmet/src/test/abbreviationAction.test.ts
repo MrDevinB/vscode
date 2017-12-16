@@ -32,6 +32,12 @@ const htmlContents = `
 	(ul>li.item$)*2
 	(ul>li.item$)*2+span
 	(div>dl>(dt+dd)*2)
+	<script>
+		img
+	</script>
+	<script type="text/html">
+		img
+	</script>
 </body>
 `;
 
@@ -149,6 +155,20 @@ suite('Tests for Expand Abbreviations (HTML)', () => {
 
 	test('Do not Expand tag that is opened, but not closed in completion list (HTML)', () => {
 		return testHtmlCompletionProvider(new Selection(9, 6, 9, 6), '<div', '<div></div>', true);
+	});
+
+	test('No expanding text inside script tag in completion list (HTML)', () => {
+		return withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
+			editor.selection = new Selection(21, 5, 21, 5);
+			const cancelSrc = new CancellationTokenSource();
+			const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token);
+			assert.equal(!completionPromise, true, `Got unexpected comapletion promise instead of undefined`);
+			return Promise.resolve();
+		});
+	});
+
+	test('Do expand text inside script tag with html type in completion list (HTML)', () => {
+		return testHtmlCompletionProvider(new Selection(24, 5, 24, 5), 'img', '<img src=\"\" alt=\"\">');
 	});
 
 	test('No expanding text inside open tag (HTML)', () => {

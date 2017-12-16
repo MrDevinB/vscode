@@ -5,7 +5,7 @@
 
 import 'mocha';
 import * as assert from 'assert';
-import { Selection } from 'vscode';
+import { Selection, Position } from 'vscode';
 import { withRandomFileEditor, closeAllEditors } from './testUtils';
 import { removeTag } from '../removeTag';
 import { updateTag } from '../updateTag';
@@ -125,6 +125,58 @@ suite('Tests for Emmet actions on html tags', () => {
 			return Promise.resolve();
 		});
 	});
+
+	test('match tag inside script tag if html type', () => {
+		const testContents = `
+<head>
+	<script>
+		<ul></ul>
+	</script>
+	<script type="text/html">
+		<ul></ul>
+	</script>
+</head>
+		`;
+		return withRandomFileEditor(testContents, 'html', (editor, doc) => {
+			editor.selections = [
+				new Selection(2, 4, 2, 4), // script tag
+				new Selection(3, 3, 3, 3), // inside script tag
+			];
+			let expectedPositions = [
+				new Position(4, 3),
+				new Position(3, 3),
+			]
+			matchTag();
+
+			for (let i = 0; i < editor.selections.length; i++) {
+				assert.equal(editor.selections[i].start.isEqual(expectedPositions[i]), true, `
+				Actual line: ${editor.selections[i].start.line}
+				Actual char: ${editor.selections[i].start.character}
+				Expected line: ${expectedPositions[i].line}
+				Expected char: ${expectedPositions[i].character}`);
+			}
+
+			editor.selections = [
+				new Selection(5, 4, 5, 4), // script tag with html type
+				new Selection(6, 3, 6, 3), // inside script tag with html type
+			];
+			expectedPositions = [
+				new Position(7, 3),
+				new Position(6, 8),
+			]
+			matchTag();
+
+			for (let i = 0; i < editor.selections.length; i++) {
+				assert.equal(editor.selections[i].start.isEqual(expectedPositions[i]), true, `
+				Actual line: ${editor.selections[i].start.line}
+				Actual char: ${editor.selections[i].start.character}
+				Expected line: ${expectedPositions[i].line}
+				Expected char: ${expectedPositions[i].character}`);
+			}
+			
+			return Promise.resolve();
+		});
+	})
 
 	test('merge lines of tag with children when empty selection', () => {
 		const expectedContents = `

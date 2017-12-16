@@ -13,6 +13,8 @@ import * as path from 'path';
 let _emmetHelper: any;
 let _currentExtensionsPath: string | undefined = undefined;
 
+export const allowedMimeTypesInScriptTag = ['text/html', 'text/plain', 'text/x-template', 'text/template'];
+
 export function getEmmetHelper() {
 	if (!_emmetHelper) {
 		_emmetHelper = require('vscode-emmet-helper');

@@ -5,7 +5,9 @@
 
 import * as vscode from 'vscode';
 import { HtmlNode } from 'EmmetNode';
-import { getNode, parseDocument, validate } from './util';
+import { getNode, parseDocument, validate, allowedMimeTypesInScriptTag } from './util';
+import { DocumentStreamReader } from './bufferStream';
+import parse from '@emmetio/html-matcher';
 
 export function matchTag() {
 	if (!validate(false) || !vscode.window.activeTextEditor) {
@@ -32,13 +34,23 @@ export function matchTag() {
 }
 
 function getUpdatedSelections(editor: vscode.TextEditor, position: vscode.Position, rootNode: HtmlNode): vscode.Selection | undefined {
-	let currentNode = <HtmlNode>getNode(rootNode, position, true);
-	if (!currentNode) {
+	const currentNode = <HtmlNode>getNode(rootNode, position, true);
+	if (!currentNode || !currentNode.close) {
 		return;
 	}
 
-	// If no closing tag or cursor is between open and close tag, then no-op
-	if (!currentNode.close || (position.isAfter(currentNode.open.end) && position.isBefore(currentNode.close.start))) {
+	// If cursor is between open and close tag, then no-op
+	// Unless its a script tag with html content, in which case re-parse it
+	// Due to https://github.com/emmetio/html-matcher/issues/2
+	if (position.isAfter(currentNode.open.end) && position.isBefore(currentNode.close.start)) {
+		if (currentNode.name === 'script'
+			&& currentNode.attributes
+			&& currentNode.attributes.some(x => x.name.toString() === 'type'
+				&& allowedMimeTypesInScriptTag.indexOf(x.value.toString()) > -1)) {
+			const buffer = new DocumentStreamReader(editor.document, currentNode.open.end, new vscode.Range(currentNode.open.end, currentNode.close.start));
+			const scriptNode = <HtmlNode>parse(buffer);
+			return getUpdatedSelections(editor, position, scriptNode);
+		}
 		return;
 	}
 

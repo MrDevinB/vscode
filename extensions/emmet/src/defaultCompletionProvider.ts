@@ -6,9 +6,7 @@
 import * as vscode from 'vscode';
 import { HtmlNode, Node } from 'EmmetNode';
 import { isValidLocationForEmmetAbbreviation } from './abbreviationActions';
-import { getEmmetHelper, getNode, getInnerRange, getMappingForIncludedLanguages, parseDocument, getEmmetConfiguration, getEmmetMode, isStyleSheet } from './util';
-
-const allowedMimeTypesInScriptTag = ['text/html', 'text/plain', 'text/x-template', 'text/template'];
+import { allowedMimeTypesInScriptTag, getEmmetHelper, getNode, getInnerRange, getMappingForIncludedLanguages, parseDocument, getEmmetConfiguration, getEmmetMode, isStyleSheet } from './util';
 
 export class DefaultCompletionItemProvider implements vscode.CompletionItemProvider {
 
