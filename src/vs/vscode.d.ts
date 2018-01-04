@@ -592,7 +592,8 @@ declare module 'vscode' {
 		/**
 		 * Render the cursor as a thin horizontal line.
 		 */
-		UnderlineThin = 6
+		UnderlineThin = 6,
+		LineThick = 7
 	}
 
 	/**

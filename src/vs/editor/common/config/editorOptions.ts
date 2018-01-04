@@ -675,7 +675,12 @@ export enum TextEditorCursorStyle {
 	/**
 	 * As a thin horizontal line (sitting under a character).
 	 */
-	UnderlineThin = 6
+	UnderlineThin = 6,
+
+	/**
+	 * As a thick vertical line (sitting between two characters and encroaching a little on the char on the right).
+	 */
+	LineThick = 7
 }
 
 /**
@@ -694,6 +699,8 @@ export function cursorStyleToString(cursorStyle: TextEditorCursorStyle): string 
 		return 'block-outline';
 	} else if (cursorStyle === TextEditorCursorStyle.UnderlineThin) {
 		return 'underline-thin';
+	} else if (cursorStyle === TextEditorCursorStyle.LineThick) {
+		return 'line-thick';
 	} else {
 		throw new Error('cursorStyleToString: Unknown cursorStyle');
 	}
@@ -715,6 +722,8 @@ function _cursorStyleFromString(cursorStyle: string, defaultValue: TextEditorCur
 		return TextEditorCursorStyle.BlockOutline;
 	} else if (cursorStyle === 'underline-thin') {
 		return TextEditorCursorStyle.UnderlineThin;
+	} else if (cursorStyle === 'line-thick') {
+		return TextEditorCursorStyle.LineThick;
 	}
 	return TextEditorCursorStyle.Line;
 }

@@ -2947,6 +2947,10 @@ declare module monaco.editor {
 		 * As a thin horizontal line (sitting under a character).
 		 */
 		UnderlineThin = 6,
+		/**
+		 * As a thick vertical line (sitting between two characters and encroaching a little on the char on the right).
+		 */
+		LineThick = 7,
 	}
 
 	export interface InternalEditorScrollbarOptions {

@@ -119,7 +119,8 @@ export class ViewCursor {
 	}
 
 	private _prepareRender(ctx: RenderingContext): ViewCursorRenderData {
-		if (this._cursorStyle === TextEditorCursorStyle.Line || this._cursorStyle === TextEditorCursorStyle.LineThin) {
+		console.log(`this._typicalHalfwidthCharacterWidth is ${this._typicalHalfwidthCharacterWidth}`);
+		if (this._cursorStyle === TextEditorCursorStyle.Line || this._cursorStyle === TextEditorCursorStyle.LineThin || this._cursorStyle === TextEditorCursorStyle.LineThick) {
 			const visibleRange = ctx.visibleRangeForPosition(this._position);
 			if (!visibleRange) {
 				// Outside viewport
@@ -128,8 +129,10 @@ export class ViewCursor {
 			let width: number;
 			if (this._cursorStyle === TextEditorCursorStyle.Line) {
 				width = dom.computeScreenAwareSize(2);
-			} else {
+			} else if (this._cursorStyle === TextEditorCursorStyle.LineThin) {
 				width = dom.computeScreenAwareSize(1);
+			} else {
+				width = Math.round(this._typicalHalfwidthCharacterWidth * 0.4);
 			}
 			const top = ctx.getVerticalOffsetForLineNumber(this._position.lineNumber) - ctx.bigNumbersDelta;
 			return new ViewCursorRenderData(top, visibleRange.left, width, this._lineHeight, '');

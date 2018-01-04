@@ -507,7 +507,7 @@ const editorConfiguration: IConfigurationNode = {
 		},
 		'editor.cursorStyle': {
 			'type': 'string',
-			'enum': ['block', 'block-outline', 'line', 'line-thin', 'underline', 'underline-thin'],
+			'enum': ['block', 'block-outline', 'line', 'line-thin', 'underline', 'underline-thin', 'line-thick'],
 			'default': editorOptions.cursorStyleToString(EDITOR_DEFAULTS.viewInfo.cursorStyle),
 			'description': nls.localize('cursorStyle', "Controls the cursor style, accepted values are 'block', 'block-outline', 'line', 'line-thin', 'underline' and 'underline-thin'")
 		},
