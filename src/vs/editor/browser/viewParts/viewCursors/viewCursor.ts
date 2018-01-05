@@ -119,7 +119,8 @@ export class ViewCursor {
 	}
 
 	private _prepareRender(ctx: RenderingContext): ViewCursorRenderData {
-		console.log(`this._typicalHalfwidthCharacterWidth is ${this._typicalHalfwidthCharacterWidth}`);
+		let textContent = '';
+		const lineContent = this._context.model.getLineContent(this._position.lineNumber);
 		if (this._cursorStyle === TextEditorCursorStyle.Line || this._cursorStyle === TextEditorCursorStyle.LineThin || this._cursorStyle === TextEditorCursorStyle.LineThick) {
 			const visibleRange = ctx.visibleRangeForPosition(this._position);
 			if (!visibleRange) {
@@ -132,10 +133,11 @@ export class ViewCursor {
 			} else if (this._cursorStyle === TextEditorCursorStyle.LineThin) {
 				width = dom.computeScreenAwareSize(1);
 			} else {
-				width = Math.round(this._typicalHalfwidthCharacterWidth * 0.4);
+				width = Math.min(5, this._typicalHalfwidthCharacterWidth);
+				textContent = lineContent.charAt(this._position.column - 1);
 			}
 			const top = ctx.getVerticalOffsetForLineNumber(this._position.lineNumber) - ctx.bigNumbersDelta;
-			return new ViewCursorRenderData(top, visibleRange.left, width, this._lineHeight, '');
+			return new ViewCursorRenderData(top, visibleRange.left, width, this._lineHeight, textContent);
 		}
 
 		const visibleRangeForCharacter = ctx.linesVisibleRangesForRange(new Range(this._position.lineNumber, this._position.column, this._position.lineNumber, this._position.column + 1), false);
@@ -148,9 +150,8 @@ export class ViewCursor {
 		const range = visibleRangeForCharacter[0].ranges[0];
 		const width = range.width < 1 ? this._typicalHalfwidthCharacterWidth : range.width;
 
-		let textContent = '';
+
 		if (this._cursorStyle === TextEditorCursorStyle.Block) {
-			const lineContent = this._context.model.getLineContent(this._position.lineNumber);
 			textContent = lineContent.charAt(this._position.column - 1);
 		}
 
