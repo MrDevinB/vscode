@@ -39,6 +39,9 @@ interface IExtensionsContent {
 
 const empty: { [key: string]: any; } = Object.create(null);
 const milliSecondsInADay = 1000 * 60 * 60 * 24;
+const choiceOk = localize('ok', "OK");
+const choiceNever = localize('neverShowAgain', "Don't show again");
+const choiceClose = localize('close', "Close");
 
 export class ExtensionTipsService extends Disposable implements IExtensionTipsService {
 
@@ -322,8 +325,8 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 					const options = [
 						localize('install', 'Install'),
 						recommendationsAction.label,
-						localize('neverShowAgain', "Don't show again"),
-						localize('close', "Close")
+						choiceNever,
+						choiceClose
 					];
 
 					this.choiceService.choose(Severity.Info, message, options, 3).done(choice => {
@@ -396,9 +399,9 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 					const searchMarketplaceAction = this.instantiationService.createInstance(ShowLanguageExtensionsAction, fileExtension);
 
 					const options = [
-						localize('ok', "OK"),
-						localize('neverShowAgain', "Don't show again"),
-						localize('close', "Close")
+						choiceOk,
+						choiceNever,
+						choiceClose
 					];
 
 					this.choiceService.choose(Severity.Info, message, options, 2).done(choice => {
@@ -476,8 +479,8 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 				const options = [
 					installAllAction.label,
 					showAction.label,
-					localize('neverShowAgain', "Don't Show Again"),
-					localize('close', "Close")
+					choiceNever,
+					choiceClose
 				];
 
 				return this.choiceService.choose(Severity.Info, message, options, 3).done(choice => {
