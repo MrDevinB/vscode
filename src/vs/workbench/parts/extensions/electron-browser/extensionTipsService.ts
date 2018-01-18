@@ -67,7 +67,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 		@IMessageService private messageService: IMessageService,
 		@ITelemetryService private telemetryService: ITelemetryService,
 		@IEnvironmentService private environmentService: IEnvironmentService,
-		@ILifecycleService lifecycleService: ILifecycleService
+		@ILifecycleService private lifecycleService: ILifecycleService
 	) {
 		super();
 
@@ -75,7 +75,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 			return;
 		}
 
-		lifecycleService.when(LifecyclePhase.Eventually).then(() => {
+		this.lifecycleService.when(LifecyclePhase.Eventually).then(() => {
 			this._suggestFileBasedRecommendations();
 		});
 
@@ -292,96 +292,97 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 			);
 
 			const config = this.configurationService.getValue<IExtensionsConfiguration>(ConfigurationKey);
-			const importantRecommendationsIgnoreList = <string[]>JSON.parse(this.storageService.get('extensionsAssistant/importantRecommendationsIgnore', StorageScope.GLOBAL, '[]'));
-
-			let importantTipsPromise;
-			if (!config.ignoreRecommendations && product.extensionImportantTips) {
-				importantTipsPromise = this.extensionsService.getInstalled(LocalExtensionType.User).then(local => {
-					const recommendationsToSuggest = Object.keys(product.extensionImportantTips)
-						.filter(id => importantRecommendationsIgnoreList.indexOf(id) === -1 && match(product.extensionImportantTips[id]['pattern'], uri.fsPath))
-						.filter(id => local.every(local => `${local.manifest.publisher}.${local.manifest.name}` !== id));
-
-					if (!recommendationsToSuggest.length) {
-						return;
-					}
-
-					const id = recommendationsToSuggest[0];
-					const name = product.extensionImportantTips[id]['name'];
-
-					// Indicates we have a suggested extension via the whitelist
-					hasSuggestion = true;
-
-					let message = localize('reallyRecommended2', "The '{0}' extension is recommended for this file type.", name);
-					// Temporary fix for the only extension pack we recommend. See https://github.com/Microsoft/vscode/issues/35364
-					if (id === 'vscjava.vscode-java-pack') {
-						message = localize('reallyRecommendedExtensionPack', "The '{0}' extension pack is recommended for this file type.", name);
-					}
-
-					const recommendationsAction = this.instantiationService.createInstance(ShowRecommendedExtensionsAction, ShowRecommendedExtensionsAction.ID, localize('showRecommendations', "Show Recommendations"));
-					const installAction = this.instantiationService.createInstance(InstallRecommendedExtensionAction, id);
-					const options = [
-						localize('install', 'Install'),
-						recommendationsAction.label,
-						choiceNever,
-						choiceClose
-					];
-
-					this.choiceService.choose(Severity.Info, message, options, 3).done(choice => {
-						switch (choice) {
-							case 0:
-								/* __GDPR__
-									"extensionRecommendations:popup" : {
-										"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-										"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
-									}
-								*/
-								this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'install', extensionId: name });
-								return installAction.run();
-							case 1:
-								/* __GDPR__
-									"extensionRecommendations:popup" : {
-										"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-										"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
-									}
-								*/
-								this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'show', extensionId: name });
-								return recommendationsAction.run();
-							case 2: importantRecommendationsIgnoreList.push(id);
-								this.storageService.store(
-									'extensionsAssistant/importantRecommendationsIgnore',
-									JSON.stringify(importantRecommendationsIgnoreList),
-									StorageScope.GLOBAL
-								);
-								/* __GDPR__
-									"extensionRecommendations:popup" : {
-										"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-										"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
-									}
-								*/
-								this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'neverShowAgain', extensionId: name });
-								return this.ignoreExtensionRecommendations();
-							case 3:
-								/* __GDPR__
-									"extensionRecommendations:popup" : {
-										"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-										"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
-									}
-								*/
-								this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'close', extensionId: name });
-						}
-					}, () => {
-						/* __GDPR__
-							"extensionRecommendations:popup" : {
-								"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-								"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
-							}
-						*/
-						this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'cancelled', extensionId: name });
-					});
-				});
+			if (config.ignoreRecommendations) {
+				return;
 			}
 
-			(importantTipsPromise || TPromise.as(null)).then(() => {
+			const importantRecommendationsIgnoreList = <string[]>JSON.parse(this.storageService.get('extensionsAssistant/importantRecommendationsIgnore', StorageScope.GLOBAL, '[]'));
+
+			let importantTipsPromise = this.extensionsService.getInstalled(LocalExtensionType.User).then(local => {
+				const recommendationsToSuggest = Object.keys(product.extensionImportantTips || [])
+					.filter(id => importantRecommendationsIgnoreList.indexOf(id) === -1 && match(product.extensionImportantTips[id]['pattern'], uri.fsPath))
+					.filter(id => local.every(local => `${local.manifest.publisher}.${local.manifest.name}` !== id));
+
+				if (!recommendationsToSuggest.length) {
+					return;
+				}
+
+				const id = recommendationsToSuggest[0];
+				const name = product.extensionImportantTips[id]['name'];
+
+				// Indicates we have a suggested extension via the whitelist
+				hasSuggestion = true;
+
+				let message = localize('reallyRecommended2', "The '{0}' extension is recommended for this file type.", name);
+				// Temporary fix for the only extension pack we recommend. See https://github.com/Microsoft/vscode/issues/35364
+				if (id === 'vscjava.vscode-java-pack') {
+					message = localize('reallyRecommendedExtensionPack', "The '{0}' extension pack is recommended for this file type.", name);
+				}
+
+				const recommendationsAction = this.instantiationService.createInstance(ShowRecommendedExtensionsAction, ShowRecommendedExtensionsAction.ID, localize('showRecommendations', "Show Recommendations"));
+				const installAction = this.instantiationService.createInstance(InstallRecommendedExtensionAction, id);
+				const options = [
+					localize('install', 'Install'),
+					recommendationsAction.label,
+					choiceNever,
+					choiceClose
+				];
+
+				this.choiceService.choose(Severity.Info, message, options, 3).done(choice => {
+					switch (choice) {
+						case 0:
+							/* __GDPR__
+								"extensionRecommendations:popup" : {
+									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+									"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
+								}
+							*/
+							this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'install', extensionId: name });
+							return installAction.run();
+						case 1:
+							/* __GDPR__
+								"extensionRecommendations:popup" : {
+									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+									"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
+								}
+							*/
+							this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'show', extensionId: name });
+							return recommendationsAction.run();
+						case 2: importantRecommendationsIgnoreList.push(id);
+							this.storageService.store(
+								'extensionsAssistant/importantRecommendationsIgnore',
+								JSON.stringify(importantRecommendationsIgnoreList),
+								StorageScope.GLOBAL
+							);
+							/* __GDPR__
+								"extensionRecommendations:popup" : {
+									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+									"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
+								}
+							*/
+							this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'neverShowAgain', extensionId: name });
+							return this.ignoreExtensionRecommendations();
+						case 3:
+							/* __GDPR__
+								"extensionRecommendations:popup" : {
+									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+									"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
+								}
+							*/
+							this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'close', extensionId: name });
+					}
+				}, () => {
+					/* __GDPR__
+						"extensionRecommendations:popup" : {
+							"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+							"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
+						}
+					*/
+					this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'cancelled', extensionId: name });
+				});
+			});
+
+			importantTipsPromise.then(() => {
 				const fileExtensionSuggestionIgnoreList = <string[]>JSON.parse(this.storageService.get
 					('extensionsAssistant/fileExtensionsSuggestionIgnore', StorageScope.GLOBAL, '[]'));
 				let mimeTypes = guessMimeTypes(uri.fsPath);
