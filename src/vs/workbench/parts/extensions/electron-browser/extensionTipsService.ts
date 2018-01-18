@@ -39,7 +39,6 @@ interface IExtensionsContent {
 
 const empty: { [key: string]: any; } = Object.create(null);
 const milliSecondsInADay = 1000 * 60 * 60 * 24;
-const choiceOk = localize('ok', "OK");
 const choiceNever = localize('neverShowAgain', "Don't show again");
 const choiceClose = localize('close', "Close");
 
@@ -267,8 +266,6 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 	private _suggest(model: ITextModel): void {
 		const uri = model.uri;
 		let hasSuggestion = false;
-		let mimeTypes = guessMimeTypes(uri.fsPath);
-		let fileExtension = paths.extname(uri.fsPath);
 
 		if (!uri || uri.scheme !== Schemas.file) {
 			return;
@@ -387,24 +384,46 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 			(importantTipsPromise || TPromise.as(null)).then(() => {
 				const fileExtensionSuggestionIgnoreList = <string[]>JSON.parse(this.storageService.get
 					('extensionsAssistant/fileExtensionsSuggestionIgnore', StorageScope.GLOBAL, '[]'));
+				let mimeTypes = guessMimeTypes(uri.fsPath);
+				let fileExtension = paths.extname(uri.fsPath);
+				if (fileExtension) {
+					fileExtension = fileExtension.substr(1); // Strip the dot
+				}
 
-				if (!hasSuggestion &&
-					fileExtension &&
-					fileExtensionSuggestionIgnoreList.indexOf(fileExtension) === -1 &&
-					mimeTypes.length === 1 &&
-					mimeTypes[0] === MIME_UNKNOWN) {
+				if (hasSuggestion ||
+					!fileExtension ||
+					mimeTypes.length !== 1 ||
+					mimeTypes[0] !== MIME_UNKNOWN ||
+					fileExtensionSuggestionIgnoreList.indexOf(fileExtension) > -1
+				) {
+					return;
+				}
 
-					let message = localize('showLanguageExtensions', "Search Marketplace Extensions for '{0}'...", fileExtension);
+				const keywords = this.getKeywordsForExtension(fileExtension);
+				this._galleryService.query({ text: `tag:"__ext_${fileExtension}" ${keywords.map(tag => `tag:"${tag}"`)}` }).then(pager => {
+					if (!pager || !pager.firstPage || !pager.firstPage.length) {
+						return;
+					}
+
+					// Suggest the search only once as this is not a strong recommendation
+					fileExtensionSuggestionIgnoreList.push(fileExtension);
+					this.storageService.store(
+						'extensionsAssistant/fileExtensionsSuggestionIgnore',
+						JSON.stringify(fileExtensionSuggestionIgnoreList),
+						StorageScope.GLOBAL
+					);
+
+
+					const message = localize('showLanguageExtensions', "The Marketplace has extensions that can help with '.{0}' files", fileExtension);
 
 					const searchMarketplaceAction = this.instantiationService.createInstance(ShowLanguageExtensionsAction, fileExtension);
 
 					const options = [
-						choiceOk,
-						choiceNever,
+						localize('searchMarketplace', "Search Marketplace"),
 						choiceClose
 					];
 
-					this.choiceService.choose(Severity.Info, message, options, 2).done(choice => {
+					this.choiceService.choose(Severity.Info, message, options, 1).done(choice => {
 						switch (choice) {
 							case 0:
 								/* __GDPR__
@@ -417,21 +436,6 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 								searchMarketplaceAction.run();
 								break;
 							case 1:
-								fileExtensionSuggestionIgnoreList.push(fileExtension);
-								this.storageService.store(
-									'extensionsAssistant/fileExtensionsSuggestionIgnore',
-									JSON.stringify(fileExtensionSuggestionIgnoreList),
-									StorageScope.GLOBAL
-								);
-								/* __GDPR__
-									"fileExtensionSuggestion:popup" : {
-										"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-										"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
-									}
-								*/
-								this.telemetryService.publicLog('fileExtensionSuggestion:popup', { userReaction: 'neverShowAgain', fileExtension: fileExtension });
-								break;
-							case 2:
 								/* __GDPR__
 									"fileExtensionSuggestion:popup" : {
 										"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
@@ -450,7 +454,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 						*/
 						this.telemetryService.publicLog('fileExtensionSuggestion:popup', { userReaction: 'cancelled', fileExtension: fileExtension });
 					});
-				}
+				});
 			});
 		});
 	}
