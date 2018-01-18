@@ -265,7 +265,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 
 	private _suggest(model: ITextModel): void {
 		const uri = model.uri;
-		let hasSuggestion = false;
+		let suggestSearchingMarketplace = true;
 
 		if (!uri || uri.scheme !== Schemas.file) {
 			return;
@@ -297,21 +297,18 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 			}
 
 			const importantRecommendationsIgnoreList = <string[]>JSON.parse(this.storageService.get('extensionsAssistant/importantRecommendationsIgnore', StorageScope.GLOBAL, '[]'));
+			let recommendationsToSuggest = Object.keys(product.extensionImportantTips || [])
+				.filter(id => importantRecommendationsIgnoreList.indexOf(id) === -1 && match(product.extensionImportantTips[id]['pattern'], uri.fsPath));
 
-			let importantTipsPromise = this.extensionsService.getInstalled(LocalExtensionType.User).then(local => {
-				const recommendationsToSuggest = Object.keys(product.extensionImportantTips || [])
-					.filter(id => importantRecommendationsIgnoreList.indexOf(id) === -1 && match(product.extensionImportantTips[id]['pattern'], uri.fsPath))
-					.filter(id => local.every(local => `${local.manifest.publisher}.${local.manifest.name}` !== id));
-
+			let importantTipsPromise = recommendationsToSuggest.length === 0 ? TPromise.as(null) : this.extensionsService.getInstalled(LocalExtensionType.User).then(local => {
+				recommendationsToSuggest = recommendationsToSuggest.filter(id => local.every(local => `${local.manifest.publisher}.${local.manifest.name}` !== id));
 				if (!recommendationsToSuggest.length) {
 					return;
 				}
 
 				const id = recommendationsToSuggest[0];
 				const name = product.extensionImportantTips[id]['name'];
-
-				// Indicates we have a suggested extension via the whitelist
-				hasSuggestion = true;
+				suggestSearchingMarketplace = false;
 
 				let message = localize('reallyRecommended2', "The '{0}' extension is recommended for this file type.", name);
 				// Temporary fix for the only extension pack we recommend. See https://github.com/Microsoft/vscode/issues/35364
@@ -391,7 +388,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 					fileExtension = fileExtension.substr(1); // Strip the dot
 				}
 
-				if (hasSuggestion ||
+				if (!suggestSearchingMarketplace ||
 					!fileExtension ||
 					mimeTypes.length !== 1 ||
 					mimeTypes[0] !== MIME_UNKNOWN ||
